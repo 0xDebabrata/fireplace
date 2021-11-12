@@ -20,12 +20,12 @@ const Watch = () => {
     const [handleSeeked, setHandleSeeked] = useState(null)
     const [playheadStart, setPlayheadStart] = useState(0)
     const [show, setShow] = useState(true)
+    const [conn, setConn] = useState(false)
 
     const router = useRouter()
 
     const loadStartPosition = () => {
         const vid = document.getElementById("video")
-        console.log(playheadStart)
         vid.currentTime = playheadStart
     }
 
@@ -100,7 +100,7 @@ const Watch = () => {
 
             ws.current.onopen = () => {
                 ws.current.send(JSON.stringify(payload))
-                console.log("join request sent")
+                setConn(true)
             }
 
         }
@@ -108,21 +108,18 @@ const Watch = () => {
         return () => {
             if (ws.current) {
                 ws.current.close()
-                console.log("connection closed")
             }
         }
 
     }, [router.isReady, router.query])
 
     useEffect(() => {
-        if (!ws.current) return;
+        if (!conn) return; 
 
         ws.current.onmessage = message => {
             const response = JSON.parse(message.data)
 
             if (response.method === "join") {
-
-                console.log(response.party.src)
 
                 setVideoSrc(response.party.src)
                 setLoading(false)
@@ -146,8 +143,6 @@ const Watch = () => {
                 }
 
                 const keepAlive = () => {
-
-                    console.log("Connection check")
 
                     const payload = {
                         "method": "check",
@@ -209,7 +204,7 @@ const Watch = () => {
                 vid.currentTime = response.playhead
             }
         }
-    }, [creator, show])
+    }, [creator, show, conn])
 
 
     return (
