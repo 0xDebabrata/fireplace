@@ -27,7 +27,6 @@ const Join = () => {
     useEffect(() => {
 
         setSession(supabase.auth.session())
-        console.log("session", session)
 
         supabase.auth.onAuthStateChange((event, session) => {
             setSession(session)
@@ -36,7 +35,6 @@ const Join = () => {
         if (router.isReady) {
             const { creatorId, id } = router.query
             setLink(`/${creatorId}/${id}/join/`)
-
         }
     }, [router.isReady, router.query])
 
