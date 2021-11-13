@@ -1,3 +1,4 @@
+import useSWR from "swr"
 import { useRouter } from "next/router"
 import { useEffect, useRef, useState } from "react"
 import WebSocket from 'isomorphic-ws'
@@ -5,14 +6,18 @@ import { supabase } from "../../../../utils/supabaseClient"
 import toast from "react-hot-toast"
 
 import Loader from "../../../../components/Loading"
+import { refreshToken } from "../../../../functions/dolby"
 import { handlePlay, handlePause, handleSeeked, loadStartPosition, updatePlayhead, keepAlive } from "../../../../functions/watchparty"
 
 import styles from "../../../../styles/Watch.module.css"
+
+const fetcher = (url) => fetch(url).then(data => { return data.json() })
 
 const Watch = () => {
 
     const ws = useRef(null)
 
+    const [accessToken, setAccessToken] = useState(null)
     const [creatorUserId, setCreatorUserId] = useState(null)
     const [partyId, setPartyId] = useState(null)
     const [creator, setCreator] = useState(false)
@@ -22,10 +27,25 @@ const Watch = () => {
     const [show, setShow] = useState(true)
     const [conn, setConn] = useState(false)
 
+    // Get Dolby access token from server
+    const { data, error } = useSWR("/api/token", fetcher)
+
     const router = useRouter()
 
-    useEffect(() => {
+    const initialiseDolby = async () => {
+        const VoxeetSDK = (await import("@voxeet/voxeet-web-sdk")).default
+        if (data && !accessToken) {
+            setAccessToken(data.accessToken)
+            VoxeetSDK.initializeToken(accessToken, refreshToken)
+            console.log("voxeet initialised")
+        }
+    }
 
+    useEffect(() => {
+        initialiseDolby()
+    })
+
+    useEffect(() => {
         const clientId = supabase.auth.user().id
 
         if (!clientId) {
