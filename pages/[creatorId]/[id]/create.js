@@ -6,6 +6,7 @@ import toast from 'react-hot-toast'
 
 import Navbar from "../../../components/Navbar"
 import Loader from '../../../components/Loading'
+import { createWatchparty, handleClick, copyLink } from '../../../functions/create'
 
 import styles from '../../../styles/Create.module.css'
 
@@ -13,80 +14,36 @@ const Create = () => {
 
     const ws = useRef(null)
     const [loading, setLoading] = useState(true)
+    const [creatorUserId, setCreatorUserId] = useState(null)
+    const [partyId, setPartyId] = useState(null)
     const [nickname, setNickname] = useState("")
     const [link, setLink] = useState(null)
     const [connected, setConnected] = useState(false)
 
     const router = useRouter()
 
-    // Get video signed URL and send create request to server
-    const createWatchparty = async (id, clientId) => {
-        const { data: watchparties, error } = await supabase
-            .from("watchparties")
-            .select("video_url")
-            .eq("id", id)
-
-        if (!error) {
-
-            ws.current = new WebSocket(`${process.env.NEXT_PUBLIC_WEBSOCKET_URL}/${clientId}`)
-
-            const payload = {
-                "method": "create",
-                "partyId": id,
-                "src": watchparties[0].video_url,
-                "clientId": clientId
-            }
-
-            ws.current.onopen = () => {
-                ws.current.send(JSON.stringify(payload))
-                console.log("create request sent")
-                setConnected(true)
-            }
-
-        } else {
-            console.log(error)
-            alert("There was a problem")
-        }
-    }
-
-    const handleClick = () => {
-        if (!nickname) {
-            // toast alert
-            toast.error("Please enter a nickname")
-        } else {
-            // Join watchparty
-            router.push(`${link}${nickname}/`)
-        }
-    }
-
-    const copyLink = () => {
-        const link = document.querySelector("#link")
-        link.select()
-        document.execCommand("copy")
-        toast.success("Link copied successfully!")
-    }
-
     useEffect(() => {
-
         const clientId = supabase.auth.user().id
+        let ref
 
         if (router.isReady) {
             const { creatorId, id } = router.query
-            setLink(`/${creatorId}/${id}/join/`)
+            setCreatorUserId(creatorId)
+            setPartyId(id)
+            setLink(`${creatorId}/${id}/join/`)
 
             if (creatorId === clientId) {
-                // Create watchparty
-                createWatchparty(id, clientId)
+                createWatchparty(id, clientId, supabase, ws, WebSocket, setConnected)
+                ref = ws.current
             }
         }
 
         return () => {
-            if (ws.current) {
-                ws.current.close()
+            if (ref) {
+                ref.current.close()
                 console.log("connection closed")
             }
         }
-
     }, [router.isReady, router.query])
 
     useEffect(() => {
@@ -97,12 +54,9 @@ const Create = () => {
 
             if (response.method === "create") {
                 setLoading(false)
-                console.log(response.party)
             }
         }
-
-    })
-
+    }, [connected])
 
     return (
         <>
@@ -115,7 +69,7 @@ const Create = () => {
                         onChange={e => setNickname(e.target.value)}
                         placeholder="Enter a nickname" />
                     <button
-                        onClick={handleClick}
+                        onClick={() => handleClick(nickname, creatorUserId, partyId, toast, router)}
                         className={styles.button}
                         disabled={loading}
                     >
@@ -129,7 +83,7 @@ const Create = () => {
                         <p>Share the following link</p>
                         <input id="link" type="text" readOnly={true} value={`https://fireplace-debabratajr.vercel.app/${link}`} className={styles.url} />
                         <button 
-                            onClick={copyLink}
+                            onClick={() => copyLink(toast)}
                             className={styles.copyButton}>
                             Copy link
                         </button>
