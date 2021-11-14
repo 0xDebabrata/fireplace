@@ -4,3 +4,21 @@ export const refreshToken = async () => {
         .then(resp => resp.json())
         .then(data => data.accessToken)
 }
+
+// Get audio devices
+export const getAudioIO = async (sdk) => {
+    try {
+        // Load output devices
+        navigator.mediaDevices.getUserMedia({ audio: true, video: false })
+            .then(async () => {
+                const audioOutput = await sdk.mediaDevice.enumerateAudioDevices("output")
+                console.log("Output devices:")
+                console.log(audioOutput)
+
+                // Load input devices
+                const audioInput = await sdk.mediaDevice.enumerateAudioDevices("input")
+                console.log("Input devices:")
+                console.log(audioInput)
+            })
+    } catch (error) { console.log(error) }
+}

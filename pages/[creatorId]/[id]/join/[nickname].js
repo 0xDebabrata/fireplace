@@ -6,7 +6,7 @@ import { supabase } from "../../../../utils/supabaseClient"
 import toast from "react-hot-toast"
 
 import Loader from "../../../../components/Loading"
-import { refreshToken } from "../../../../functions/dolby"
+import { getAudioIO, refreshToken } from "../../../../functions/dolby"
 import { handlePlay, handlePause, handleSeeked, loadStartPosition, updatePlayhead, keepAlive } from "../../../../functions/watchparty"
 
 import styles from "../../../../styles/Watch.module.css"
@@ -38,6 +38,7 @@ const Watch = () => {
             setAccessToken(data.accessToken)
             VoxeetSDK.initializeToken(accessToken, refreshToken)
             console.log("voxeet initialised")
+            getAudioIO(VoxeetSDK)
         }
     }
 
