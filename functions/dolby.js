@@ -6,7 +6,7 @@ export const refreshToken = async () => {
 }
 
 // Get audio devices
-export const getAudioIO = async (sdk) => {
+export const getAudioIO = async (sdk, nickname) => {
     try {
         // Load output devices
         navigator.mediaDevices.getUserMedia({ audio: true, video: false })
@@ -19,6 +19,11 @@ export const getAudioIO = async (sdk) => {
                 const audioInput = await sdk.mediaDevice.enumerateAudioDevices("input")
                 console.log("Input devices:")
                 console.log(audioInput)
+
+                return {
+                    inputDevices: audioInput,
+                    outputDevices: audioOutput
+                }
             })
     } catch (error) { console.log(error) }
 }

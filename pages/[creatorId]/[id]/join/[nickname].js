@@ -36,9 +36,13 @@ const Watch = () => {
         const VoxeetSDK = (await import("@voxeet/voxeet-web-sdk")).default
         if (data && !accessToken) {
             setAccessToken(data.accessToken)
-            VoxeetSDK.initializeToken(accessToken, refreshToken)
-            console.log("voxeet initialised")
-            getAudioIO(VoxeetSDK)
+            VoxeetSDK.initializeToken(data.accessToken, refreshToken)
+            console.log("token initialized")
+            getAudioIO(VoxeetSDK, router.query.nickname)
+            try {
+                VoxeetSDK.session.open({ name: "test" })
+                console.log("session open")
+            } catch (e) { console.log(e) }
         }
     }
 
