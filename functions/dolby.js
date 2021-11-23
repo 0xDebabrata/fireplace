@@ -1,12 +1,15 @@
 // Callback passed to Voxeet initializer to get refreshed token
 export const refreshToken = async () => {
-    return fetch("/api/token")
-        .then(resp => resp.json())
-        .then(data => data.accessToken)
+    try {
+        const response = await fetch("/api/token")
+        const json = await response.json()
+        console.log(json.accessToken)
+        return json.accessToken
+    } catch (e) { console.log(e) }
 }
 
 // Get audio devices
-export const getAudioIO = async (sdk, nickname) => {
+export const getAudioIO = async (sdk) => {
     try {
         // Load output devices
         navigator.mediaDevices.getUserMedia({ audio: true, video: false })
@@ -26,4 +29,56 @@ export const getAudioIO = async (sdk, nickname) => {
                 }
             })
     } catch (error) { console.log(error) }
+}
+
+// Open session and set default IO
+export const openSession = async (sdk, nickname) => {
+    try {
+        // Open session
+        sdk.session.open({ name: nickname })
+        console.log("session open")
+
+        /*
+        // Set default audio IO
+        navigator.mediaDevices.getUserMedia({ audio: true, video: false })
+            .then(async () => {
+                sdk.mediaDevice.selectAudioInput("default")
+                sdk.mediaDevice.selectAudioOutput("default")
+                console.log("audio IO set")
+            })
+            */
+    } catch (e) { console.log(e) }
+}
+
+// Create and join conference
+export const joinConference = async (sdk, partyId) => {
+    const conferenceOptions = {
+        alias: partyId,
+        params: {
+            dolbyVoice: true
+        }
+    }
+
+    const joinOptions = {
+        constraints: {
+            audio: true,
+            video: false
+        }
+    }
+
+    try {
+        navigator.mediaDevices.getUserMedia({ audio: true, video: false })
+            .then(() => {
+                // Create conference
+                sdk.conference.create(conferenceOptions)
+                    .then(conf => {
+                        // Join the conference
+                        sdk.conference.join(conf, joinOptions)
+                        console.log("joined", conf.alias)
+                    })
+                    .catch(e => { console.error(e) })
+            })
+    } catch (e) { console.error(e) }
+
+
 }

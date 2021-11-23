@@ -1,12 +1,12 @@
 import useSWR from "swr"
 import { useRouter } from "next/router"
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useRef, useState, useCallback } from "react"
 import WebSocket from 'isomorphic-ws'
 import { supabase } from "../../../../utils/supabaseClient"
 import toast from "react-hot-toast"
 
 import Loader from "../../../../components/Loading"
-import { getAudioIO, refreshToken } from "../../../../functions/dolby"
+import { getAudioIO, joinConference, openSession, refreshToken } from "../../../../functions/dolby"
 import { handlePlay, handlePause, handleSeeked, loadStartPosition, updatePlayhead, keepAlive } from "../../../../functions/watchparty"
 
 import styles from "../../../../styles/Watch.module.css"
@@ -32,23 +32,20 @@ const Watch = () => {
 
     const router = useRouter()
 
-    const initialiseDolby = async () => {
+    const initialiseDolby = useCallback( async () => {
         const VoxeetSDK = (await import("@voxeet/voxeet-web-sdk")).default
-        if (data && !accessToken) {
-            setAccessToken(data.accessToken)
-            VoxeetSDK.initializeToken(data.accessToken, refreshToken)
-            console.log("token initialized")
-            getAudioIO(VoxeetSDK, router.query.nickname)
-            try {
-                VoxeetSDK.session.open({ name: "test" })
-                console.log("session open")
-            } catch (e) { console.log(e) }
-        }
-    }
+
+        const token = await refreshToken()
+        VoxeetSDK.initializeToken(token, refreshToken)
+        openSession(VoxeetSDK, router.query.nickname)
+        setTimeout(() => joinConference(VoxeetSDK, router.query.id), 1000)
+
+    }, [router.query])
 
     useEffect(() => {
+        if (!router.isReady) return;
         initialiseDolby()
-    })
+    }, [router.isReady, initialiseDolby])
 
     useEffect(() => {
         const clientId = supabase.auth.user().id
