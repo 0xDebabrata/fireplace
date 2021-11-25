@@ -1,4 +1,3 @@
-import useSWR from "swr"
 import { useRouter } from "next/router"
 import { useEffect, useRef, useState, useCallback } from "react"
 import WebSocket from 'isomorphic-ws'
@@ -6,16 +5,15 @@ import { supabase } from "../../../../utils/supabaseClient"
 import toast from "react-hot-toast"
 
 import Loader from "../../../../components/Loading"
-import { getAudioIO, joinConference, openSession, refreshToken } from "../../../../functions/dolby"
+import { joinConference, openSession, getAccessToken, setSpatialEnvironment, setSpatialPosition } from "../../../../functions/dolby"
 import { handlePlay, handlePause, handleSeeked, loadStartPosition, updatePlayhead, keepAlive } from "../../../../functions/watchparty"
 
 import styles from "../../../../styles/Watch.module.css"
 
-const fetcher = (url) => fetch(url).then(data => { return data.json() })
-
 const Watch = () => {
 
     const ws = useRef(null)
+    const VoxeetSDK = useRef()
 
     const [accessToken, setAccessToken] = useState(null)
     const [creatorUserId, setCreatorUserId] = useState(null)
@@ -27,25 +25,129 @@ const Watch = () => {
     const [show, setShow] = useState(true)
     const [conn, setConn] = useState(false)
 
-    // Get Dolby access token from server
-    const { data, error } = useSWR("/api/token", fetcher)
-
     const router = useRouter()
 
-    const initialiseDolby = useCallback( async () => {
-        const VoxeetSDK = (await import("@voxeet/voxeet-web-sdk")).default
+    const isConnected = (participant) => {
+    return [ 'Decline', 'Error', 'Kicked', 'Left' ].indexOf(participant.status) < 0;
+};
 
-        const token = await refreshToken()
-        VoxeetSDK.initializeToken(token, refreshToken)
-        openSession(VoxeetSDK, router.query.nickname)
-        setTimeout(() => joinConference(VoxeetSDK, router.query.id), 1000)
+    const setSpatialEnvironment = () => {
+        const right   = { x: 1, y: 0,  z: 0 };
+        const forward = { x: 0, y: -1, z: 0 };
+        const up      = { x: 0, y: 0,  z: 1 };
+        const scale   = { x: window.innerWidth / 1, y: window.innerHeight / 1, z: 1 };
 
-    }, [router.query])
+        VoxeetSDK.current.conference.setSpatialEnvironment(scale, forward, up, right);
+
+        console.log("spatial environment set")
+    }
+
+    const setLocalPosition = () => {
+        VoxeetSDK.current.conference.setSpatialPosition(VoxeetSDK.current.session.participant, {
+            x: window.innerWidth/2,
+            y: window.innerHeight/2,
+            z: 0
+        })
+
+        console.group("Local position:")
+        console.log({
+            x: window.innerWidth/2,
+            y: window.innerHeight/2,
+            z: 0
+        })
+        console.groupEnd()
+    }
+
+    const setSpatialPosition = (participant, number) => {
+        switch (number) {
+            case 2:
+                VoxeetSDK.current.conference.setSpatialPosition(participant, {
+                    x: 0,
+                    y: window.innerHeight/2,
+                    z: 0
+                })
+                break;
+            case 3:
+                VoxeetSDK.current.conference.setSpatialPosition(participant, {
+                    x: window.innerWidth,
+                    y: window.innerHeight/2,
+                    z: 0
+                })
+                break;
+            case 4:
+                VoxeetSDK.current.conference.setSpatialPosition(participant, {
+                    x: window.innerWidth/2,
+                    y: window.innerHeight,
+                    z: 0
+                })
+                break;
+            case 5:
+                VoxeetSDK.current.conference.setSpatialPosition(participant, {
+                    x: window.innerWidth/2,
+                    y: 0,
+                    z: 0
+                })
+        }
+    }
 
     useEffect(() => {
         if (!router.isReady) return;
-        initialiseDolby()
-    }, [router.isReady, initialiseDolby])
+
+        getAccessToken()
+            .then(async (token) => {
+                VoxeetSDK.current = (await import("@voxeet/voxeet-web-sdk")).default
+                VoxeetSDK.current.initializeToken(token, getAccessToken)
+            })
+            .then(async () => {
+                await VoxeetSDK.current.session.open({ name: router.query.nickname })
+
+                const conferenceOptions = {
+                    alias: router.query.id,
+                    params: {
+                        dolbyVoice: true
+                    }
+                }
+
+                const conference = await VoxeetSDK.current.conference.create(conferenceOptions)
+
+                const joinOptions = {
+                    constraints: {
+                        audio: true,
+                        video: false
+                    },
+                    preferRecvMono: false,
+                    preferSendMono: false,
+                    spatialAudio: true
+                }
+
+                await VoxeetSDK.current.conference.join(conference, joinOptions)
+
+                setSpatialEnvironment()
+                setLocalPosition()
+
+                // Set remote positions
+                const arr = [...VoxeetSDK.current.conference.participants]
+                let flag = 2
+                arr.map(val => {
+                    const participant = val[1]
+                    if (participant.id !== VoxeetSDK.current.session.participant.id) {
+                        setSpatialPosition(participant, flag)
+                        console.log("remote postion set")
+                        flag += 1
+                    }
+                })
+
+                VoxeetSDK.current.conference.on("participantUpdated", (participant) => {
+                    if (isConnected(participant) && participant.id !== VoxeetSDK.current.session.participant.id) {
+                        setSpatialPosition(participant, [...VoxeetSDK.current.conference.participants].length)
+                        console.group(participant.id)
+                        console.log([...VoxeetSDK.current.conference.participants].length)
+                        console.log("set position for new participant")
+                        console.groupEnd()
+                    }
+                })
+            })
+    }, [router.isReady, router.query])
 
     useEffect(() => {
         const clientId = supabase.auth.user().id

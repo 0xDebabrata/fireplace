@@ -9,14 +9,13 @@ export default async function handler(req, res) {
             "Content-Type": "application/x-www-form-urlencoded",
             "Authorization": authHeader 
         },
-        body: `grant_type=client_credentials&expires_in=${30}` 
+        body: `grant_type=client_credentials&expires_in=${7200}` 
     }
 
     // Get access token from Dolby
     return fetch(tokenUrl, params)
         .then(data => data.json())
         .then(result => {
-            console.log(result)
             const accessToken = result.access_token
             res.status(200).json({ accessToken })  //Send token to client 
         })
