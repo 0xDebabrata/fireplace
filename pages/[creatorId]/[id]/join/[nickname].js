@@ -147,6 +147,7 @@ const Watch = () => {
                     }
                 })
             })
+
     }, [router.isReady, router.query])
 
     useEffect(() => {
