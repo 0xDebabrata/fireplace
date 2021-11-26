@@ -1,0 +1,37 @@
+.muted {
+    position: absolute;
+    width: 9px;
+    height: 9px;
+    top: 10px;
+    right: 10px;
+    border-radius: 50%;
+
+    background: #757575;
+    box-shadow: 0px 0px 20px 2px #757575;
+}
+
+.listening {
+    position: absolute;
+    width: 9px;
+    height: 9px;
+    top: 10px;
+    right: 10px;
+    border-radius: 50%;
+
+    background: #0093D2;
+    box-shadow: 0px 0px 20px 2px #0093D2;
+}
+
+.speaking {
+    position: absolute;
+    width: 9px;
+    height: 9px;
+    top: 10px;
+    right: 10px;
+    border-radius: 50%;
+
+    background: #E78225;
+    box-shadow: 0px 0px 20px 2px #E78225;
+}
+
+

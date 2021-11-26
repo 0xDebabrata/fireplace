@@ -1,9 +1,11 @@
 import { useRouter } from "next/router"
+import Image from "next/image"
 import { useEffect, useRef, useState, useCallback } from "react"
 import WebSocket from 'isomorphic-ws'
 import { supabase } from "../../../../utils/supabaseClient"
 import toast from "react-hot-toast"
 
+import MicStatus from '../../../../components/MicStatus'
 import Loader from "../../../../components/Loading"
 import { joinConference, openSession, getAccessToken, setSpatialEnvironment, setSpatialPosition } from "../../../../functions/dolby"
 import { handlePlay, handlePause, handleSeeked, loadStartPosition, updatePlayhead, keepAlive } from "../../../../functions/watchparty"
@@ -24,12 +26,41 @@ const Watch = () => {
     const [playheadStart, setPlayheadStart] = useState(0)
     const [show, setShow] = useState(true)
     const [conn, setConn] = useState(false)
+    const [status, setStatus] = useState()
+    const [mute, setMute] = useState(false)
 
     const router = useRouter()
 
     const isConnected = (participant) => {
     return [ 'Decline', 'Error', 'Kicked', 'Left' ].indexOf(participant.status) < 0;
 };
+
+    const handleMute = () => {
+        try {
+            if (mute) {
+                VoxeetSDK.current.conference.mute(VoxeetSDK.current.session.participant, false)
+                setMute(false)
+                setStatus("listening")
+            } else {
+                VoxeetSDK.current.conference.mute(VoxeetSDK.current.session.participant, true)
+                setMute(true)
+                setStatus("muted")
+            }
+        } catch (err) { console.error(err) }
+    }
+
+    const listenIsSpeaking = () => {
+        setInterval(() => {
+            [...VoxeetSDK.current.conference.participants].map(val => {
+                const participant = val[1]
+                VoxeetSDK.current.conference.isSpeaking(participant, (isSpeaking) => {
+                    if (participant.id === VoxeetSDK.current.session.participant.id && isSpeaking) {
+                        setStatus("speaking")
+                    }
+                })
+            })
+        }, 500)
+    }
 
     const setSpatialEnvironment = () => {
         const right   = { x: 1, y: 0,  z: 0 };
@@ -121,9 +152,10 @@ const Watch = () => {
                 }
 
                 await VoxeetSDK.current.conference.join(conference, joinOptions)
-
                 setSpatialEnvironment()
                 setLocalPosition()
+                setStatus("listening")
+                listenIsSpeaking()
 
                 // Set remote positions
                 const arr = [...VoxeetSDK.current.conference.participants]
@@ -148,6 +180,10 @@ const Watch = () => {
                 })
             })
 
+        return () => {
+            VoxeetSDK.current.conference.leave()
+                .then(() => console.log("left conference"))
+        }
     }, [router.isReady, router.query])
 
     useEffect(() => {
@@ -282,6 +318,22 @@ const Watch = () => {
                         onLoadedMetadata={() => loadStartPosition(playheadStart)}
                     />
                 }
+                <div className={styles.mic}>
+                { mute ?
+                    <Image
+                        onClick={handleMute}
+                        width={28}
+                        height={28}
+                        src="/mic-muted.svg" alt="Muted mic" />
+                      :
+                    <Image
+                        onClick={handleMute}
+                        width={28}
+                        height={28}
+                        src="/mic-listening.svg" alt="Open mic" />
+                }
+                </div>
+                <MicStatus mute={mute} status={status} />
             </div>
             }
         </div>

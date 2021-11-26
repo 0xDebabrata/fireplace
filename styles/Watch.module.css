@@ -5,9 +5,20 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    position: relative;
 }
 
 .container video {
-    width: 100% !important;
-    height: auto !important;
+    width: 100%;
+    height: auto;
+}
+
+.mic {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+}
+
+.mic:hover {
+    cursor: pointer;
 }

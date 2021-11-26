@@ -1,0 +1,116 @@
+.player {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background-color: black;
+}
+
+.viewer {
+    width: 100%;
+    height: auto;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.toggle {
+    color: white;
+    font-size: 20px;
+    font-weight: bold;
+    background-color: transparent;
+    border: none;
+    position: absolute;
+    bottom: 15px;
+    left: 10px;
+    cursor: pointer;
+}
+
+.toggle:focus {
+    outline: none;
+}
+
+.player p {
+    color: white;
+    position: absolute;
+    font-size: 14px;
+    bottom: 7px;
+    left: 50px
+}
+
+.slider {
+    -webkit-appearance: none;
+    width: 90px;
+    position: absolute;
+    bottom: 25px;
+    left: 200px;
+    cursor: pointer;
+    border-radius: 5px;
+    background: linear-gradient(to right, #fff 0%, #fff 100%, #696969 50%, #696969 100%);
+}
+
+.slider::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 4px;
+    border-radius: 5px;
+    background-color: transparent;
+}
+
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    height: 12px;
+    width: 12px;
+    margin-top: -4px;
+    border-radius: 50%;
+    background: white;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.3s ease-in;
+}
+
+.slider:hover, .slider::-webkit-slider-thumb {
+    opacity: 1;
+}
+
+.slider::-ms-thumb {
+    margin: 0
+}
+
+.slider:focus {
+    outline: none;
+}
+
+.progress {
+    position: absolute;
+    bottom: 55px;
+    height: 4px;
+    width: 100%;
+    display: flex;
+    cursor: pointer;
+    background: #696969;
+}
+
+.progressFilled {
+    height: 4px;
+    width: 0%;
+    background: white;
+    display: flex;
+    border-radius: 5px;
+}
+
+.audio {
+    position: absolute;
+    bottom: 15px;
+    left: 160px;
+}
+
+.fullscreen {
+    position: absolute;
+    bottom: 15px;
+    right: 15px;
+    cursor: pointer;
+}
+
