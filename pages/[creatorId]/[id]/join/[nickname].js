@@ -5,6 +5,7 @@ import WebSocket from 'isomorphic-ws'
 import { supabase } from "../../../../utils/supabaseClient"
 import toast from "react-hot-toast"
 
+import VideoPlayer from "../../../../components/VideoPlayer"
 import MicStatus from '../../../../components/MicStatus'
 import Loader from "../../../../components/Loading"
 import { joinConference, openSession, getAccessToken, setSpatialEnvironment, setSpatialPosition } from "../../../../functions/dolby"
@@ -16,6 +17,7 @@ const Watch = () => {
 
     const ws = useRef(null)
     const VoxeetSDK = useRef()
+    const screenRef= useRef()
 
     const [accessToken, setAccessToken] = useState(null)
     const [creatorUserId, setCreatorUserId] = useState(null)
@@ -296,28 +298,26 @@ const Watch = () => {
     return (
         <div>
             {loading ? <Loader loading={loading} /> :
-            <div className={styles.container}>
+            <div ref={screenRef} className={styles.container}>
                 { creator ?
-                    <video 
-                        id="video"
-                        src={videoSrc} 
-                        autoPlay={true} 
+                    <VideoPlayer
+                        src={videoSrc}
                         controls={true}
-                        onPlay={() => handlePlay(partyId, creatorUserId, ws)}
-                        onPause={() => handlePause(partyId, creatorUserId, ws)}
-                        onSeeked={() => handleSeeked(partyId, creatorUserId, ws)}
-                        onLoadedMetadata={() => loadStartPosition(playheadStart)}
+                        partyId={partyId}
+                        creatorId={creatorUserId}
+                        ws={ws}
+                        playheadStart={playheadStart}
+                        screenRef={screenRef}
                     />
                     :
-                    <video 
-                        id="video"
-                        src={videoSrc} 
-                        autoPlay={false} 
-                        onPlay={() => setShow(false)}
-                        controls={show}
-                        onLoadedMetadata={() => loadStartPosition(playheadStart)}
+                    <VideoPlayer
+                        src={videoSrc}
+                        controls={false}
+                        playheadStart={playheadStart}
+                        screenRef={screenRef}
                     />
                 }
+
                 <div className={styles.mic}>
                 { mute ?
                     <Image

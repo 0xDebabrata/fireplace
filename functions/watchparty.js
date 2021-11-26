@@ -24,6 +24,7 @@ export const handlePause = (id, creatorId, ws) => {
 export const handleSeeked = (id, creatorId, ws) => {
     const vid = document.getElementById("video")
     const playhead = vid.currentTime
+    console.log("seeked")
 
     const payload = {
         "method": "seeked",

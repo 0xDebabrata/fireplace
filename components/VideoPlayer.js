@@ -4,13 +4,14 @@ import {useRef, useEffect, useState} from "react"
 import Image from "next/image"
 
 import { handleMouseMovement, noAudio, handleFullscreen, formatTime, seek, togglePlay, updateProgress, updateToggle, updateVolume } from '../functions/video'
+import { handlePause, handlePlay, handleSeeked, loadStartPosition } from '../functions/watchparty'
 
-const VideoPlayer = () => {
+const VideoPlayer = ({ src, controls, partyId, creatorId, ws, playheadStart, screenRef }) => {
 
     const videoRef = useRef()
     const toggleRef = useRef()
     const progressRef = useRef()
-    const containerRef= useRef()
+    const containerRef = useRef()
     const volumeRef = useRef()
     const controlsRef = useRef()
 
@@ -29,28 +30,48 @@ const VideoPlayer = () => {
             onMouseMove={() => handleMouseMovement(containerRef.current, controlsRef.current)}
             className={styles.player}>
             <video 
-                onPlay={() => updateToggle(videoRef.current, toggleRef.current)}
-                onPause={() => updateToggle(videoRef.current, toggleRef.current)}
+                id="video"
+                onPlay={() => {
+                    if (controls) handlePlay(partyId, creatorId, ws)
+                    updateToggle(videoRef.current, toggleRef.current)
+                }}
+                onPause={() =>  {
+                    if (controls) handlePause(partyId, creatorId, ws)
+                    updateToggle(videoRef.current, toggleRef.current)
+                }}
+                onSeeked={() => {
+                    if (controls) handleSeeked(partyId, creatorId, ws)
+                }}
                 onTimeUpdate={() => updateProgress(videoRef.current, progressRef.current, setTime)}
-                onLoadedMetadata={() => setDuration(formatTime(videoRef.current.duration))}
+                onLoadedMetadata={() => {
+                    loadStartPosition(playheadStart)
+                    setDuration(formatTime(videoRef.current.duration))
+                }}
                 ref={videoRef}
                 onClick={() => togglePlay(videoRef.current)}
                 className={styles.viewer} 
-                src="https://www.learningcontainer.com/wp-content/uploads/2020/05/sample-mp4-file.mp4" />
+                src={src} />
             <div className={styles.controls} ref={controlsRef}>
                 <div 
-                    onClick={(e) => seek(e, videoRef.current)}
+                    onClick={(e) => {
+                        controls ?
+                        seek(e, videoRef.current)
+                        : 
+                            null
+                    }}
                     className={styles.progress}>
                     <div 
                         ref={progressRef} 
                         className={styles.progressFilled} />
                 </div>
+        {controls &&
                 <button 
                     ref={toggleRef}
                     onClick={() => togglePlay(videoRef.current)}
                     className={styles.toggle}>
                     ▶︎
                 </button>
+                }
                 {time && duration && 
                     <p>{time} / {duration}</p>
                 }
@@ -68,7 +89,7 @@ const VideoPlayer = () => {
                 />
                 <div className={styles.fullscreen}>
                     <Image src="/fullscreen.png" 
-                        onClick={() => handleFullscreen(containerRef.current)}
+                        onClick={() => handleFullscreen(screenRef.current)}
                         alt="fullscreen icon"
                         width={24} height={24} />
                 </div>

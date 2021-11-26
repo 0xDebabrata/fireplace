@@ -38,7 +38,7 @@ export const formatTime = (sec) => {
     const minDivisor = sec % 3600
     const mins = Math.floor(minDivisor / 60)
     const secDivisor = minDivisor % 60
-    const seconds = Math.ceil(secDivisor)
+    let seconds = Math.ceil(secDivisor)
 
     if (hours === 0) {
         seconds = seconds >= 10 ? seconds : "0" + seconds 

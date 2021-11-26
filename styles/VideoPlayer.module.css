@@ -37,7 +37,7 @@
     color: white;
     position: absolute;
     font-size: 14px;
-    bottom: 7px;
+    bottom: 16px;
     left: 50px
 }
 
@@ -103,13 +103,13 @@
 
 .audio {
     position: absolute;
-    bottom: 15px;
+    bottom: 8px;
     left: 160px;
 }
 
 .fullscreen {
     position: absolute;
-    bottom: 15px;
+    bottom: 8px;
     right: 15px;
     cursor: pointer;
 }
