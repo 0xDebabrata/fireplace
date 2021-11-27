@@ -56,8 +56,12 @@ const Watch = () => {
             [...VoxeetSDK.current.conference.participants].map(val => {
                 const participant = val[1]
                 VoxeetSDK.current.conference.isSpeaking(participant, (isSpeaking) => {
-                    if (participant.id === VoxeetSDK.current.session.participant.id && isSpeaking) {
-                        setStatus("speaking")
+                    if (participant.id === VoxeetSDK.current.session.participant.id) {
+                        if (isSpeaking) {
+                            setStatus("speaking")
+                        } else {
+                            setStatus("listening")
+                        }
                     }
                 })
             })
