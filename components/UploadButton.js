@@ -8,30 +8,55 @@ const UploadButton = ({ flag, setFlag }) => {
 
     const fileInput = useRef(null)
 
-    const fileUpload = async (file) => {
-        const { data, error } = await supabase
-            .storage
-            .from("videos")
-            .upload(`${supabase.auth.user().id}/${file.name}`, file, {
-                upsert: true
-            })
-
-        if (error) {
-            console.log(error)
-            throw new Error(error)
-        } else {
-            setFlag(!flag)
-        }
-    }
-
     const handleClick = () => {
         fileInput.current.click()
+    }
+
+    const updateDb = async (fileName) => {
+        const { data, error } = await supabase
+            .from("fireplace-videos")
+            .insert([{
+                name: fileName,
+                url: `https://d3v6emoc2mddy2.cloudfront.net/${supabase.auth.user().id}/${fileName}`,
+                user_id: supabase.auth.user().id
+            }])
     }
 
     const handleFileSelect = async () => {
         const file = fileInput.current.files[0]
 
-        const promise = fileUpload(file)
+        const reqObject = {
+            method: "POST",
+            body: JSON.stringify({
+                userId: supabase.auth.user().id,
+                fileName: file.name,
+                fileType: file.type
+            })
+        }
+
+        const promise = new Promise( async (resolve, reject) => {
+
+            const url = await fetch("/api/preSignedURL", reqObject)
+                .then(resp => resp.json())
+                .then(url => { return url.url })
+
+            const xhr = new XMLHttpRequest()
+
+            xhr.onreadystatechange = async () => {
+                if (xhr.readyState === 4) {
+                    if (xhr.status === 200) {
+                        await updateDb(file.name)
+                        resolve(xhr)
+                        setFlag(!flag)
+                    } else {
+                        reject(xhr)
+                    }
+                }
+            }
+            
+            xhr.open("PUT", url)
+            xhr.send(file)
+        })
 
         toast.promise(promise, {
             loading: "Uploading file",

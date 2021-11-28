@@ -29,9 +29,7 @@ export const updateProgress = (vid, bar, setTime) => {
 
 export const seek = (e, vid) => {
     const seekTime = (e.clientX / e.currentTarget.offsetWidth)*vid.duration
-    vid.currentTime = seekTime
-    console.log(vid.currentTime)
-    console.log(seekTime)
+    vid.currentTime = seekTime.toString()
 }
 
 export const formatTime = (sec) => {

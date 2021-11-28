@@ -11,6 +11,7 @@
   "dependencies": {
     "@supabase/supabase-js": "^1.21.0",
     "@voxeet/voxeet-web-sdk": "^3.4.0-beta.1",
+    "aws-sdk": "^2.1037.0",
     "isomorphic-ws": "^4.0.1",
     "next": "11.0.1",
     "react": "17.0.2",

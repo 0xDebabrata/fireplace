@@ -265,6 +265,7 @@ const Watch = () => {
 
             if (response.method === "join") {
                 setVideoSrc(response.party.src)
+                console.log(response.party.src)
                 setLoading(false)
                 setPlayheadStart(response.party.playhead)
 

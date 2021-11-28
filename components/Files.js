@@ -11,13 +11,8 @@ const Files = ({ flag }) => {
 
     const getFiles = async () => {
         const { data, error } = await supabase
-          .storage
-          .from('videos')
-          .list(`${supabase.auth.user().id}`, {
-            limit: 100,
-            offset: 0,
-            sortBy: { column: 'created_at', order: 'desc' },
-          })
+            .from("fireplace-videos")
+            .select("*")
 
         setVideos(data)
         setLoading(false)
@@ -31,10 +26,10 @@ const Files = ({ flag }) => {
          <div>
              {loading ? <Loader loading={loading} /> :
                  videos ?
-                     videos.map(video => {
-                         return <Card key={video.id} video={video} list={videos} setVideos={setVideos} />
+                     videos.map((video, index) => {
+                         return <Card key={index} name={video.name} url={video.url} video={video} list={videos} setVideos={setVideos} />
                      }) :
-                     <p>Upload a video to start a watchparty</p>
+                     null
              }
          </div>
      )
