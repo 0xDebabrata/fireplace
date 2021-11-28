@@ -34,3 +34,18 @@ p {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+
+/* Participant avatars */
+.avi img {
+    border-radius: 50%;
+}
+
+.avi {
+    margin: 0 3px;
+    opacity: 0.7;
+    z-index: 999;
+}
+
+.avi:hover {
+    opacity: 1;
+}

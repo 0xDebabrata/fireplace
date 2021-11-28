@@ -32,15 +32,21 @@ const VideoPlayer = ({ src, controls, partyId, creatorId, ws, playheadStart, scr
             <video 
                 id="video"
                 onPlay={() => {
-                    if (controls) handlePlay(partyId, creatorId, ws)
-                    updateToggle(videoRef.current, toggleRef.current)
+                    if (controls) {
+                        handlePlay(partyId, creatorId, ws)
+                        updateToggle(videoRef.current, toggleRef.current)
+                    }
                 }}
                 onPause={() =>  {
-                    if (controls) handlePause(partyId, creatorId, ws)
-                    updateToggle(videoRef.current, toggleRef.current)
+                    if (controls) {
+                        handlePause(partyId, creatorId, ws)
+                        updateToggle(videoRef.current, toggleRef.current)
+                    }
                 }}
                 onSeeked={() => {
-                    if (controls) handleSeeked(partyId, creatorId, ws)
+                    if (controls) {
+                        handleSeeked(partyId, creatorId, ws)
+                    }
                 }}
                 onTimeUpdate={() => updateProgress(videoRef.current, progressRef.current, setTime)}
                 onLoadedMetadata={() => {
@@ -48,7 +54,11 @@ const VideoPlayer = ({ src, controls, partyId, creatorId, ws, playheadStart, scr
                     setDuration(formatTime(videoRef.current.duration))
                 }}
                 ref={videoRef}
-                onClick={() => togglePlay(videoRef.current)}
+                onClick={() => {
+                    if (controls) {
+                        togglePlay(videoRef.current)
+                    }
+                }}
                 className={styles.viewer} 
                 src={src} />
             <div className={styles.controls} ref={controlsRef}>

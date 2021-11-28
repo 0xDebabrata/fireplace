@@ -6,10 +6,12 @@ import { supabase } from "../../../../utils/supabaseClient"
 import toast from "react-hot-toast"
 
 import VideoPlayer from "../../../../components/VideoPlayer"
+import Participants from "../../../../components/Participants"
 import MicStatus from '../../../../components/MicStatus'
 import Loader from "../../../../components/Loading"
 import { joinConference, openSession, getAccessToken, setSpatialEnvironment, setSpatialPosition } from "../../../../functions/dolby"
 import { handlePlay, handlePause, handleSeeked, loadStartPosition, updatePlayhead, keepAlive } from "../../../../functions/watchparty"
+import { createAvatar } from "../../../../functions/avatar"
 
 import styles from "../../../../styles/Watch.module.css"
 
@@ -26,7 +28,6 @@ const Watch = () => {
     const [videoSrc, setVideoSrc] = useState(null)
     const [loading, setLoading] = useState(true)
     const [playheadStart, setPlayheadStart] = useState(0)
-    const [show, setShow] = useState(true)
     const [conn, setConn] = useState(false)
     const [status, setStatus] = useState()
     const [mute, setMute] = useState(false)
@@ -163,25 +164,44 @@ const Watch = () => {
                 setStatus("listening")
                 listenIsSpeaking()
 
+                // USE CUSTOM PARTICIPANT LIST
+
                 // Set remote positions
                 const arr = [...VoxeetSDK.current.conference.participants]
+                console.log(arr.length)
                 let flag = 2
                 arr.map(val => {
                     const participant = val[1]
-                    if (participant.id !== VoxeetSDK.current.session.participant.id) {
+                    if (participant.id !== VoxeetSDK.current.session.participant.id && isConnected(participant)) {
                         setSpatialPosition(participant, flag)
                         console.log("remote postion set")
                         flag += 1
                     }
                 })
 
+                VoxeetSDK.current.conference.on("participantAdded", (participant) => {
+                    if (!isConnected(participant)) return;
+
+                    createAvatar(flag-1, participant.id, participant.info.name)
+                })
+
                 VoxeetSDK.current.conference.on("participantUpdated", (participant) => {
+                    const avi = document.getElementById(participant.id)
+
                     if (isConnected(participant) && participant.id !== VoxeetSDK.current.session.participant.id) {
-                        setSpatialPosition(participant, [...VoxeetSDK.current.conference.participants].length)
-                        console.group(participant.id)
-                        console.log([...VoxeetSDK.current.conference.participants].length)
-                        console.log("set position for new participant")
-                        console.groupEnd()
+                        if (participant.id === VoxeetSDK.current.session.participant.id) return;
+
+                        if (!avi) {
+                            createAvatar(flag-1, participant.id, participant.info.name)
+                        }
+
+                        setSpatialPosition(participant, flag)
+                        flag += 1
+                        console.log(flag)
+                    } else if (avi) {
+                        avi.remove()
+                        flag -= 1
+                        console.log(flag)
                     }
                 })
             })
@@ -282,13 +302,13 @@ const Watch = () => {
             }
 
             if (response.method === "play") {
-                if (!creator && !show) {
+                if (!creator) {
                     vid.play()
                 }
             }
 
             if (response.method === "pause") {
-                if (!creator && !show) {
+                if (!creator) {
                     vid.pause()
                 }
             }
@@ -297,12 +317,14 @@ const Watch = () => {
                 vid.currentTime = response.playhead
             }
         }
-    }, [creator, show, conn])
+    }, [creator, conn])
 
     return (
         <div>
             {loading ? <Loader loading={loading} /> :
             <div ref={screenRef} className={styles.container}>
+                <Participants />
+
                 { creator ?
                     <VideoPlayer
                         src={videoSrc}

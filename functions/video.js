@@ -30,6 +30,8 @@ export const updateProgress = (vid, bar, setTime) => {
 export const seek = (e, vid) => {
     const seekTime = (e.clientX / e.currentTarget.offsetWidth)*vid.duration
     vid.currentTime = seekTime
+    console.log(vid.currentTime)
+    console.log(seekTime)
 }
 
 export const formatTime = (sec) => {
@@ -88,5 +90,3 @@ export const handleMouseMovement = (ref, controls) => {
     document.body.style.cursor = "default";
     controls.style.visibility = "visible" 
 }
-
-
