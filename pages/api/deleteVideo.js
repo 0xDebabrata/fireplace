@@ -1,8 +1,8 @@
 import AWS from 'aws-sdk'
 
 AWS.config.update({
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID_S3,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY_S3,
 })
 
 const S3_BUCKET = "fireplace-videos";
