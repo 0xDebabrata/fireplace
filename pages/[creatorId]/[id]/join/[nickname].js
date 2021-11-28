@@ -11,7 +11,7 @@ import MicStatus from '../../../../components/MicStatus'
 import Loader from "../../../../components/Loading"
 import { joinConference, openSession, getAccessToken, setSpatialEnvironment, setSpatialPosition } from "../../../../functions/dolby"
 import { handlePlay, handlePause, handleSeeked, loadStartPosition, updatePlayhead, keepAlive } from "../../../../functions/watchparty"
-import { createAvatar } from "../../../../functions/avatar"
+import { createAvatar, addGlow, removeGlow } from "../../../../functions/avatar"
 
 import styles from "../../../../styles/Watch.module.css"
 
@@ -62,6 +62,12 @@ const Watch = () => {
                             setStatus("speaking")
                         } else {
                             setStatus("listening")
+                        }
+                    } else {
+                        if (isSpeaking) {
+                            addGlow(participant.id)
+                        } else {
+                            removeGlow(participant.id)
                         }
                     }
                 })
@@ -164,8 +170,6 @@ const Watch = () => {
                 setStatus("listening")
                 listenIsSpeaking()
 
-                // USE CUSTOM PARTICIPANT LIST
-
                 // Set remote positions
                 const arr = [...VoxeetSDK.current.conference.participants]
                 console.log(arr.length)
@@ -174,7 +178,6 @@ const Watch = () => {
                     const participant = val[1]
                     if (participant.id !== VoxeetSDK.current.session.participant.id && isConnected(participant)) {
                         setSpatialPosition(participant, flag)
-                        console.log("remote postion set")
                         flag += 1
                     }
                 })
@@ -197,11 +200,9 @@ const Watch = () => {
 
                         setSpatialPosition(participant, flag)
                         flag += 1
-                        console.log(flag)
                     } else if (avi) {
                         avi.remove()
                         flag -= 1
-                        console.log(flag)
                     }
                 })
             })
