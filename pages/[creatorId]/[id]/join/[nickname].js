@@ -31,6 +31,7 @@ const Watch = () => {
     const [conn, setConn] = useState(false)
     const [status, setStatus] = useState()
     const [mute, setMute] = useState(false)
+    const [denied, setDenied] = useState(true)
 
     const router = useRouter()
 
@@ -135,7 +136,7 @@ const Watch = () => {
     }
 
     useEffect(() => {
-        if (!router.isReady) return;
+        if (!router.isReady || denied) return;
 
         getAccessToken()
             .then(async (token) => {
@@ -211,7 +212,7 @@ const Watch = () => {
             VoxeetSDK.current.conference.leave()
                 .then(() => console.log("left conference"))
         }
-    }, [router.isReady, router.query])
+    }, [router.isReady, router.query, denied])
 
     useEffect(() => {
         const clientId = supabase.auth.user().id
@@ -264,11 +265,18 @@ const Watch = () => {
             const response = JSON.parse(message.data)
             const vid = document.getElementById("video")
 
+            // Max participant limit reached
+            if (response.method === "denied") {
+                router.push("/denied")
+                setDenied(true)
+            }
+
             if (response.method === "join") {
                 setVideoSrc(response.party.src)
                 console.log(response.party.src)
                 setLoading(false)
                 setPlayheadStart(response.party.playhead)
+                setDenied(false)
 
                 const partyId = response.party.id
 
