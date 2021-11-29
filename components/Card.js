@@ -73,7 +73,7 @@ const Card = ({ name, url, list, setVideos }) => {
                 <button 
                     onClick={() => createWatchparty(url)}
                     className={styles.button}>
-                    START
+                    Start 
                 </button>
                 <svg 
                     onClick={() => handleDelete(name)}

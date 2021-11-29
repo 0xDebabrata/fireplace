@@ -1,6 +1,6 @@
 .container {
     width: 90%;
-    height: 50px;
+    height: 60px;
     background-color: black;
     display: flex;
     justify-content: space-between;
@@ -62,14 +62,25 @@
 }
 
 .button {
-    height: 25px;
-    width: 65px;
-    background-color: #FFB015;
+    height: 30px;
+    width: 80px;
+    background-color: #4B4B4B;
     border: none;
     border-radius: 7px;
-    margin-right: 10px;
+    margin-right: 20px;
     cursor: pointer;
+    color: #FFB015;
+    font-family: "Hind";
+    font-size: 16px;
+    transition: 0.2s;
+    line-height: 0;
 }
+
+.button:hover {
+    color: black;
+    background-color: #FFB015;
+}
+
 
 
 
