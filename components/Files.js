@@ -29,7 +29,7 @@ const Files = ({ flag }) => {
                      videos.map((video, index) => {
                          return <Card key={index} name={video.name} url={video.url} video={video} list={videos} setVideos={setVideos} />
                      }) :
-                     null
+                     <p className="onboarding">Upload a video to get started</p>
              }
          </div>
      )

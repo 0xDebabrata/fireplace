@@ -49,3 +49,8 @@ p {
 .avi:hover {
     opacity: 1;
 }
+
+.onboarding {
+    text-align: center;
+    margin-top: 40px;
+}
