@@ -7,7 +7,7 @@ AWS.config.update({
 
 const S3_BUCKET = "fireplace-videos";
 const REGION = "us-east-1";
-const URL_EXPIRATION_TIME = 60; // in seconds
+const URL_EXPIRATION_TIME = 7200; // in seconds
 
 const myBucket = new AWS.S3({
     params: { Bucket: S3_BUCKET},
