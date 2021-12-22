@@ -13,12 +13,3 @@
     height: auto;
 }
 
-.mic {
-    position: absolute;
-    bottom: 5px;
-    right: 50px;
-}
-
-.mic:hover {
-    cursor: pointer;
-}

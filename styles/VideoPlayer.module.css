@@ -1,7 +1,5 @@
 .player {
-    position: absolute;
-    top: 0;
-    bottom: 0;
+    position: relative;
     width: 100%;
     height: 100%;
     overflow: hidden;
@@ -105,6 +103,7 @@
     position: absolute;
     bottom: 8px;
     left: 160px;
+    cursor: pointer;
 }
 
 .fullscreen {
@@ -114,3 +113,12 @@
     cursor: pointer;
 }
 
+.mic {
+    position: absolute;
+    bottom: 5px;
+    right: 50px;
+}
+
+.mic:hover {
+    cursor: pointer;
+}

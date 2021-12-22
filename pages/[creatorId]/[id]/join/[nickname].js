@@ -9,6 +9,8 @@ import VideoPlayer from "../../../../components/VideoPlayer"
 import Participants from "../../../../components/Participants"
 import MicStatus from '../../../../components/MicStatus'
 import Loader from "../../../../components/Loading"
+import Sidebar from "../../../../components/sidebar/Sidebar"
+
 import { joinConference, openSession, getAccessToken, setSpatialEnvironment, setSpatialPosition } from "../../../../functions/dolby"
 import { handlePlay, handlePause, handleSeeked, loadStartPosition, updatePlayhead, keepAlive } from "../../../../functions/watchparty"
 import { createAvatar, addGlow, removeGlow } from "../../../../functions/avatar"
@@ -344,6 +346,9 @@ const Watch = () => {
                         ws={ws}
                         playheadStart={playheadStart}
                         screenRef={screenRef}
+                        mute={mute}
+                        handleMute={handleMute}
+                        status={status}
                     />
                     :
                     <VideoPlayer
@@ -351,25 +356,13 @@ const Watch = () => {
                         controls={false}
                         playheadStart={playheadStart}
                         screenRef={screenRef}
+                        mute={mute}
+                        handleMute={handleMute}
+                        status={status}
                     />
                 }
 
-                <div className={styles.mic}>
-                { mute ?
-                    <Image
-                        onClick={handleMute}
-                        width={28}
-                        height={28}
-                        src="/mic-muted.svg" alt="Muted mic" />
-                      :
-                    <Image
-                        onClick={handleMute}
-                        width={28}
-                        height={28}
-                        src="/mic-listening.svg" alt="Open mic" />
-                }
-                </div>
-                <MicStatus mute={mute} status={status} />
+                <Sidebar />
             </div>
             }
         </div>
