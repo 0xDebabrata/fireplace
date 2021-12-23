@@ -1,13 +1,11 @@
 import { useRouter } from "next/router"
-import Image from "next/image"
-import { useEffect, useRef, useState, useCallback } from "react"
+import { useEffect, useRef, useState } from "react"
 import WebSocket from 'isomorphic-ws'
 import { supabase } from "../../../../utils/supabaseClient"
 import toast from "react-hot-toast"
 
 import VideoPlayer from "../../../../components/VideoPlayer"
 import Participants from "../../../../components/Participants"
-import MicStatus from '../../../../components/MicStatus'
 import Loader from "../../../../components/Loading"
 import Sidebar from "../../../../components/sidebar/Sidebar"
 
@@ -23,7 +21,6 @@ const Watch = () => {
     const VoxeetSDK = useRef()
     const screenRef= useRef()
 
-    const [accessToken, setAccessToken] = useState(null)
     const [creatorUserId, setCreatorUserId] = useState(null)
     const [partyId, setPartyId] = useState(null)
     const [creator, setCreator] = useState(false)
