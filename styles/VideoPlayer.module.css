@@ -1,6 +1,6 @@
 .player {
     position: relative;
-    width: 100%;
+    flex: 1 auto;
     height: 100%;
     overflow: hidden;
     background-color: black;
