@@ -26,6 +26,7 @@ const Sidebar = () => {
             onMouseDown={(e) => handleClick(e)}
             id="border"
             className={styles.container}>
+            <div className={styles.tag} />
             <div className={styles.window}>
                 <Tabs selectedTab={selectedTab} setSelectedTab={setSelectedTab} />
                 <main>

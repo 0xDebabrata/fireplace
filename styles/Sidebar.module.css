@@ -7,6 +7,15 @@
     cursor: col-resize;
 }
 
+.tag {
+    position: absolute;
+    width: 20px;
+    height: 10px;
+    left: 20;
+    z-index: 999999;
+    background-color: purple;
+}
+
 .window {
     position: relative;
     width: 100%;
