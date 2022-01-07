@@ -73,6 +73,8 @@ export const handleFullscreen = (ref) => {
 
 export const handleMouseMovement = (ref, controls) => {
     const timer = ref.getAttribute("timer")
+    const player = document.getElementById("video-player")
+
     if (timer) {
         clearTimeout(timer)
         ref.setAttribute("timer", "")
@@ -80,11 +82,11 @@ export const handleMouseMovement = (ref, controls) => {
     }
     const t = setTimeout(() => {
         ref.setAttribute("timer", "")
-        document.body.style.cursor = "none";
+        player.style.cursor = "none";
         controls.style.visibility = "hidden" 
     }, 3500)
 
     ref.setAttribute("timer", t)
-    document.body.style.cursor = "default";
+    player.style.cursor = "default";
     controls.style.visibility = "visible" 
 }

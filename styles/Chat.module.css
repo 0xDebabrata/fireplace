@@ -1,0 +1,88 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    justify-content: flex-end;
+}
+
+.chat {
+    flex: 1 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    margin: 10px 0;
+}
+
+.chat::-webkit-scrollbar {
+    background-color: transparent;
+    width: 7px;
+}
+
+.chat::-webkit-scrollbar-thumb {
+    background-color: #696969;
+    border-radius: 7px;
+}
+
+.chat div {
+    margin-top: 3px;
+    margin-bottom: 3px;
+    margin-right: 5px;
+    padding: 2px 10px;
+    border-radius: 7px;
+    width: 70%;
+    background-color: #696969;
+    white-space: pre-wrap;
+    word-break: break-all;
+}
+
+.chat div p {
+    color: white;
+}
+
+.container input {
+    height: 40px;
+    border-radius: 7px;
+    border: 1px solid #696969;
+    background-color: black;
+    font-family: "Hind";
+    color: white;
+    padding: 0 10px;
+}
+
+.container input::placeholder {
+    color: white;
+    font-family: "Hind";
+}
+
+.container input:focus {
+    outline: none;
+}
+
+.inputWrapper {
+    display: flex;
+    align-items: center;
+}
+
+.inputWrapper input {
+    flex: 1 auto
+}
+
+.sendIcon {
+    width: 40px;
+    height: 40px;
+    background-color: #C4C4C4;
+    border-radius: 7px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: 5px;
+    cursor: pointer;
+    transform: 0.3s all;
+}
+
+.sendIcon:hover {
+    background-color: white;
+}

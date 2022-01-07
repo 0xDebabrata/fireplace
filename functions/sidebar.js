@@ -1,13 +1,13 @@
 let drag = false 
 
 const handleMouseMove = (e) => {
+    e.preventDefault()
     const border = document.getElementById("border")
     const percent = 100 - (e.clientX / window.innerWidth)*100
     border.style.width = percent + "%"
 }
 
 export const handleClick = (e) => {
-    e.preventDefault()
     const border = document.getElementById("border")
     const rect = border.getBoundingClientRect()
     const clickPointX = e.clientX

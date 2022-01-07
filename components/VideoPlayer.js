@@ -29,6 +29,7 @@ const VideoPlayer = ({ src, controls, partyId, creatorId, ws, playheadStart, scr
     return (
         <div ref={containerRef} 
             onMouseMove={() => handleMouseMovement(containerRef.current, controlsRef.current)}
+            id="video-player"
             className={styles.player}>
             <MicStatus mute={mute} status={status} />
             <video 
