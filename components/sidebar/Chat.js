@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import Image from "next/image"
 import ChatMessage from "./ChatMessage"
 
@@ -9,16 +9,23 @@ const Chat = ({ messageList, setMessageList }) => {
     const [message, setMessage] = useState("")
 
     const addMessage = () => {
-        if (!message) return
+        if (!message) return;
 
         setMessageList(oldArr => {
             return [...oldArr, {
                 message: message,
-                sent: false 
+                sent: true 
             }]
         })
+
         setMessage("")
     }
+
+    // Auto scroll to bottom of chat whenever new message is added
+    useEffect(() => {
+        const chat = document.getElementById("chat")
+        chat.scrollTop = chat.scrollHeight
+    }, [messageList])
 
     return (
         <div className={styles.container}> 
