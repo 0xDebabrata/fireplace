@@ -39,7 +39,7 @@
     max-width: 70%;
     background-color: #696969;
     white-space: pre-wrap;
-    word-break: break-all;
+    word-wrap: break-word;
 }
 
 .chat div p {
