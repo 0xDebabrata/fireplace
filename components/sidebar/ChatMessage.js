@@ -1,13 +1,22 @@
 import styles from "../../styles/Chat.module.css"
 
-const ChatMessage = ({ message, sent }) => {
+const ChatMessage = ({ messageObj }) => {
     return (
         <div 
-            style={sent? {
+            style={messageObj.sent ? {
                 marginLeft: "auto",
-                marginRight: "5px"
-            } : null}>
-            <p>{message}</p>
+                marginRight: "5px",
+            } : {
+                marginBottom: "15px"
+            }}>
+            <p>{messageObj.message}</p>
+            {!messageObj.sent && (
+                <p 
+                    style={{
+                        color: "#ffffff90",
+                    }}
+                    className={styles.nickname}>{messageObj.nickname}</p>
+            )}
         </div>
     )
 }

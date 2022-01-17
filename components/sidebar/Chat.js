@@ -1,16 +1,27 @@
 import { useEffect, useState } from "react"
 import Image from "next/image"
+import { supabase } from "../../utils/supabaseClient"
 import ChatMessage from "./ChatMessage"
 
 import styles from "../../styles/Chat.module.css"
 
-const Chat = ({ messageList, setMessageList }) => {
+const Chat = ({ ws, partyId, messageList, setMessageList }) => {
 
     const [message, setMessage] = useState("")
 
     const addMessage = (e) => {
         e.preventDefault()
         if (!message) return;
+
+        if (ws.current) {
+            const payload = {
+                "method": "chat",
+                "clientId": supabase.auth.user().id,
+                "partyId": partyId,
+                "message": message
+            }
+            ws.current.send(JSON.stringify(payload))
+        }
 
         setMessageList(oldArr => {
             return [...oldArr, {
@@ -34,7 +45,7 @@ const Chat = ({ messageList, setMessageList }) => {
                 className={styles.chat}
             >
                 {messageList.map((messageObj, index) => (
-                    <ChatMessage message={messageObj.message} sent={messageObj.sent} key={index} />
+                    <ChatMessage messageObj={messageObj} key={index} />
                 ))}
             </div>
             <form className={styles.inputWrapper} onSubmit={addMessage}>

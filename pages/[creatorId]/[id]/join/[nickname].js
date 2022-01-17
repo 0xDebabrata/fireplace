@@ -31,6 +31,7 @@ const Watch = () => {
     const [status, setStatus] = useState()
     const [mute, setMute] = useState(false)
     const [denied, setDenied] = useState(true)
+    const [messageList, setMessageList] = useState([])
 
     const router = useRouter()
 
@@ -246,7 +247,6 @@ const Watch = () => {
                 ws.current.send(JSON.stringify(payload))
                 setConn(true)
             }
-
         }
 
         return () => {
@@ -272,7 +272,6 @@ const Watch = () => {
 
             if (response.method === "join") {
                 setVideoSrc(response.party.src)
-                console.log(response.party.src)
                 setLoading(false)
                 setPlayheadStart(response.party.playhead)
                 setDenied(false)
@@ -325,6 +324,16 @@ const Watch = () => {
             if (response.method === "seeked") {
                 vid.currentTime = response.playhead
             }
+
+            if (response.method === "chat") {
+                setMessageList(oldArr => {
+                    return [...oldArr, {
+                        message: response.message,
+                        sent: false,
+                        nickname: response.nickname
+                    }]
+                })
+            }
         }
     }, [creator, conn])
 
@@ -359,7 +368,7 @@ const Watch = () => {
                     />
                 }
 
-                <Sidebar />
+                <Sidebar ws={ws} partyId={partyId} messageList={messageList} setMessageList={setMessageList} />
             </div>
             }
         </div>

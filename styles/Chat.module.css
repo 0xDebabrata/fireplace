@@ -87,3 +87,9 @@
 .sendIcon:hover {
     background-color: white;
 }
+
+.nickname {
+    position: absolute;
+    font-size: 12px;
+    left: 15px;
+}
