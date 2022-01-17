@@ -8,7 +8,8 @@ const Chat = ({ messageList, setMessageList }) => {
 
     const [message, setMessage] = useState("")
 
-    const addMessage = () => {
+    const addMessage = (e) => {
+        e.preventDefault()
         if (!message) return;
 
         setMessageList(oldArr => {
@@ -36,21 +37,21 @@ const Chat = ({ messageList, setMessageList }) => {
                     <ChatMessage message={messageObj.message} sent={messageObj.sent} key={index} />
                 ))}
             </div>
-            <div className={styles.inputWrapper}>
+            <form className={styles.inputWrapper} onSubmit={addMessage}>
                 <input 
                     value={message}
                     onChange={(e) => setMessage(e.currentTarget.value)}
                     type="text"
                     placeholder="Enter message" />
-                <div 
-                    onClick={addMessage}
+                <button
+                    type="submit"
                     className={styles.sendIcon}>
                     <Image src="/arrow-icon.svg"
                         alt="Send message icon"
                         width={28} height={28} 
                     />
-                </div>
-            </div>
+                </button>
+            </form>
         </div>
     )
 }
