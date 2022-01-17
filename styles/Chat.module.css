@@ -26,7 +26,11 @@
     border-radius: 7px;
 }
 
-.chat div {
+.wrapper {
+    max-width: 100%;
+}
+
+.message {
     margin-top: 3px;
     margin-bottom: 3px;
     margin-right: auto;
@@ -89,7 +93,6 @@
 }
 
 .nickname {
-    position: absolute;
     font-size: 12px;
     left: 15px;
 }

@@ -18,15 +18,15 @@ export const createAvatar = (count, id, name) => {
 
 export const addGlow = (id) => {
     const div = document.getElementById(id)
-    const colour = div.getAttribute("data-colour")
-
-    div.childNodes[0].style.boxShadow = "0 0 10px 3px #" + colour
+    if (div) {
+        const colour = div.getAttribute("data-colour")
+        div.childNodes[0].style.boxShadow = "0 0 10px 3px #" + colour
+    }
 }
 
 export const removeGlow = (id) => {
     const div = document.getElementById(id)
     if (div) {
-        console.log("removing")
         div.childNodes[0].style.removeProperty("box-shadow")
         div.style.removeProperty("box-shadow")
     }

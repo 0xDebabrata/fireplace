@@ -173,7 +173,6 @@ const Watch = () => {
 
                 // Set remote positions
                 const arr = [...VoxeetSDK.current.conference.participants]
-                console.log(arr.length)
                 let flag = 2
                 arr.map(val => {
                     const participant = val[1]
@@ -224,12 +223,12 @@ const Watch = () => {
             
         if (router.isReady) {
             const { creatorId, id, nickname } = router.query
+            setPartyId(id)
 
             if (supabase.auth.session()) {
                 if (creatorId === supabase.auth.user().id) {
                     setCreator(true)
                     setCreatorUserId(creatorId)
-                    setPartyId(id)
                 }
             }
 
@@ -341,8 +340,6 @@ const Watch = () => {
         <div>
             {loading ? <Loader loading={loading} /> :
             <div ref={screenRef} className={styles.container}>
-                <Participants />
-
                 { creator ?
                     <VideoPlayer
                         src={videoSrc}
