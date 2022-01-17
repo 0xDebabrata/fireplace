@@ -9,6 +9,7 @@ const ChatMessage = ({ messageObj }) => {
                 style={messageObj.sent ? {
                     marginLeft: "auto",
                     marginRight: "5px",
+                    textAlign: "right",
                     backgroundColor: "#69696990"
                 } : null }
             > 

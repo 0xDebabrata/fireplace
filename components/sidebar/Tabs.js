@@ -22,6 +22,7 @@ const Tabs = ({ selectedTab, setSelectedTab }) => {
                     )
                 })}
             </ul>
+        {/*
             <div className={styles.close}>
                 <Image src={"/cross-icon.svg"}
                     alt={"Close sidebar"}
@@ -29,6 +30,7 @@ const Tabs = ({ selectedTab, setSelectedTab }) => {
                     height={30}
                 />
             </div>
+            */}
         </nav>
     )
 }
