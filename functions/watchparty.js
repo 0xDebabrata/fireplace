@@ -66,5 +66,5 @@ export const keepAlive = (ws) => {
 
     ws.current.send(JSON.stringify(payload))
 
-    setTimeout(() => keepAlive(ws), 60000)
+    setTimeout(() => keepAlive(ws), 10000)
 }
