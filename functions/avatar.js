@@ -31,4 +31,3 @@ export const removeGlow = (id) => {
         div.style.removeProperty("box-shadow")
     }
 }
-
