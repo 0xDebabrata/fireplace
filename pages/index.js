@@ -20,11 +20,9 @@ export default function Home() {
 
         if (window.location.hash.substr(-8, 8) === "recovery") {
             setReset(true)
-            console.log(window.location.hash)
             const count = window.location.hash.search("&")
             const accessToken = window.location.hash.substr(14, count-14)
             setToken(accessToken)
-            console.log(accessToken)
         } else {
             setSession(supabase.auth.session())
 
