@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import Chat from "./Chat"
-import Participants from "../Participants"
 
 import styles from "../../styles/Sidebar.module.css"
 import Tabs from "./Tabs"
@@ -28,7 +27,6 @@ const Sidebar = ({ ws, partyId, messageList, setMessageList }) => {
             className={styles.container}>
             <div className={styles.window}>
                 <Tabs selectedTab={selectedTab} setSelectedTab={setSelectedTab} />
-                <Participants />
                 <main>
                     <AnimatePresence exitBeforeEnter>
                         <motion.div
