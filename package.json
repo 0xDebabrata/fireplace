@@ -10,11 +10,10 @@
   },
   "dependencies": {
     "@supabase/supabase-js": "^1.21.0",
-    "@voxeet/voxeet-web-sdk": "^3.4.0-beta.1",
     "aws-sdk": "^2.1037.0",
     "framer-motion": "^5.5.5",
     "isomorphic-ws": "^4.0.1",
-    "next": "11.0.1",
+    "next": "^12.3.2",
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "react-hot-toast": "^2.0.0",

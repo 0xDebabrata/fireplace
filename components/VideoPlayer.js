@@ -2,12 +2,11 @@ import styles from "../styles/VideoPlayer.module.css"
 
 import {useRef, useEffect, useState} from "react"
 import Image from "next/image"
-import MicStatus from "./MicStatus"
 
 import { handleMouseMovement, noAudio, handleFullscreen, formatTime, seek, togglePlay, updateProgress, updateToggle, updateVolume } from '../functions/video'
 import { handlePause, handlePlay, handleSeeked, loadStartPosition } from '../functions/watchparty'
 
-const VideoPlayer = ({ src, controls, partyId, creatorId, ws, playheadStart, screenRef, mute, handleMute, status }) => {
+const VideoPlayer = ({ src, controls, partyId, creatorId, ws, playheadStart, screenRef }) => {
 
     const videoRef = useRef()
     const toggleRef = useRef()
@@ -31,7 +30,6 @@ const VideoPlayer = ({ src, controls, partyId, creatorId, ws, playheadStart, scr
             onMouseMove={() => handleMouseMovement(containerRef.current, controlsRef.current)}
             id="video-player"
             className={styles.player}>
-            <MicStatus mute={mute} status={status} />
             <video 
                 id="video"
                 onPlay={() => {
@@ -106,22 +104,6 @@ const VideoPlayer = ({ src, controls, partyId, creatorId, ws, playheadStart, scr
                         onClick={() => handleFullscreen(screenRef.current)}
                         alt="fullscreen icon"
                         width={24} height={24} />
-                </div>
-
-                <div className={styles.mic}>
-                { mute ?
-                    <Image
-                        onClick={handleMute}
-                        width={28}
-                        height={28}
-                        src="/mic-muted.svg" alt="Muted mic" />
-                      :
-                    <Image
-                        onClick={handleMute}
-                        width={28}
-                        height={28}
-                        src="/mic-listening.svg" alt="Open mic" />
-                }
                 </div>
             </div>
         </div>

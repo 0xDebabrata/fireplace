@@ -4,7 +4,8 @@ import Image from "next/image"
 import styles from "../../styles/Sidebar.module.css"
 
 const Tabs = ({ selectedTab, setSelectedTab }) => {
-    const tabs = ["Chat", "Settings"]
+    // const tabs = ["Chat", "Settings"]
+    const tabs = ["Chat"]
 
     return (
         <nav className={styles.nav}>
