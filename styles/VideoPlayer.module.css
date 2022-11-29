@@ -1,124 +1,152 @@
 .player {
-    position: relative;
-    flex: 1 auto;
-    height: 100%;
-    overflow: hidden;
-    background-color: black;
+  position: relative;
+  flex: 1 auto;
+  height: 100%;
+  overflow: hidden;
+  background-color: black;
 }
 
 .viewer {
-    width: 100%;
-    height: auto;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+  width: 100%;
+  height: auto;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 .toggle {
-    color: white;
-    font-size: 20px;
-    font-weight: bold;
-    background-color: transparent;
-    border: none;
-    position: absolute;
-    bottom: 15px;
-    left: 10px;
-    cursor: pointer;
+  color: white;
+  font-size: 20px;
+  font-weight: bold;
+  background-color: transparent;
+  border: none;
+  position: absolute;
+  bottom: 15px;
+  left: 10px;
+  cursor: pointer;
 }
 
 .toggle:focus {
-    outline: none;
+  outline: none;
 }
 
 .player p {
-    color: white;
-    position: absolute;
-    font-size: 14px;
-    bottom: 16px;
-    left: 50px
+  color: white;
+  position: absolute;
+  font-size: 14px;
+  bottom: 16px;
+  left: 50px
 }
 
 .slider {
-    -webkit-appearance: none;
-    width: 90px;
-    position: absolute;
-    bottom: 25px;
-    left: 200px;
-    cursor: pointer;
-    border-radius: 5px;
-    background: linear-gradient(to right, #fff 0%, #fff 100%, #696969 50%, #696969 100%);
+  -webkit-appearance: none;
+  width: 90px;
+  position: absolute;
+  bottom: 25px;
+  left: 200px;
+  cursor: pointer;
+  border-radius: 5px;
+  background: linear-gradient(to right, #fff 0%, #fff 100%, #696969 50%, #696969 100%);
 }
 
 .slider::-webkit-slider-runnable-track {
-    width: 100%;
-    height: 4px;
-    border-radius: 5px;
-    background-color: transparent;
+  width: 100%;
+  height: 4px;
+  border-radius: 5px;
+  background-color: transparent;
 }
 
 .slider::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    height: 12px;
-    width: 12px;
-    margin-top: -4px;
-    border-radius: 50%;
-    background: white;
-    cursor: pointer;
-    opacity: 0;
-    transition: opacity 0.3s ease-in;
+  -webkit-appearance: none;
+  height: 12px;
+  width: 12px;
+  margin-top: -4px;
+  border-radius: 50%;
+  background: white;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.3s ease-in;
 }
 
 .slider:hover, .slider::-webkit-slider-thumb {
-    opacity: 1;
+  opacity: 1;
 }
 
 .slider::-ms-thumb {
-    margin: 0
+  margin: 0
 }
 
 .slider:focus {
-    outline: none;
+  outline: none;
+}
+
+.subtitle[data-state="hidden"] {
+  color: white;
+  background-color: transparent;
+  padding: 5px 10px;
+  border-radius: 5px;
+  border: 1px solid white;
+  position: absolute;
+  bottom: 15px;
+  left: 320px;
+  cursor: pointer;
+}
+
+.subtitle[data-state="active"] {
+  color: black;
+  background-color: white;
+  padding: 5px 10px;
+  border-radius: 5px;
+  border: 1px solid white;
+  position: absolute;
+  bottom: 15px;
+  left: 320px;
+  cursor: pointer;
+}
+
+.subtitle:focus {
+  outline: none;
 }
 
 .progress {
-    position: absolute;
-    bottom: 55px;
-    height: 4px;
-    width: 100%;
-    display: flex;
-    cursor: pointer;
-    background: #696969;
+  position: absolute;
+  bottom: 55px;
+  height: 4px;
+  width: 100%;
+  display: flex;
+  cursor: pointer;
+  background: #696969;
 }
 
 .progressFilled {
-    height: 4px;
-    width: 0%;
-    background: white;
-    display: flex;
-    border-radius: 5px;
+  height: 4px;
+  width: 0%;
+  background: white;
+  display: flex;
+  border-radius: 5px;
 }
 
 .audio {
-    position: absolute;
-    bottom: 8px;
-    left: 160px;
-    cursor: pointer;
+  position: absolute;
+  bottom: 8px;
+  left: 160px;
+  cursor: pointer;
 }
 
 .fullscreen {
-    position: absolute;
-    bottom: 8px;
-    right: 15px;
-    cursor: pointer;
+  position: absolute;
+  bottom: 8px;
+  right: 15px;
+  cursor: pointer;
 }
 
 .mic {
-    position: absolute;
-    bottom: 5px;
-    right: 50px;
+  position: absolute;
+  bottom: 5px;
+  right: 50px;
 }
 
 .mic:hover {
-    cursor: pointer;
+  cursor: pointer;
 }
