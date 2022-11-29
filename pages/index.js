@@ -10,42 +10,42 @@ import Recovery from '../components/Recovery'
 import styles from '../styles/Home.module.css'
 
 export default function Home() {
-    
-    const [session, setSession] = useState(null)
-    const [reset, setReset] = useState(false)
-    const [token, setToken] = useState(null)
-    const [flag, setFlag] = useState(false)
 
-    useEffect(() => {
+  const [session, setSession] = useState(null)
+  const [reset, setReset] = useState(false)
+  const [token, setToken] = useState(null)
+  const [flag, setFlag] = useState(false)
 
-        if (window.location.hash.substr(-8, 8) === "recovery") {
-            setReset(true)
-            const count = window.location.hash.search("&")
-            const accessToken = window.location.hash.substr(14, count-14)
-            setToken(accessToken)
-        } else {
-            setSession(supabase.auth.session())
+  useEffect(() => {
 
-            supabase.auth.onAuthStateChange((event, session) => {
-                setSession(session)
-            })
-        }
-    }, [])
+    if (window.location.hash.substr(-8, 8) === "recovery") {
+      setReset(true)
+      const count = window.location.hash.search("&")
+      const accessToken = window.location.hash.substr(14, count-14)
+      setToken(accessToken)
+    } else {
+      setSession(supabase.auth.session())
 
-    if (reset) {
-        return (<Recovery token={token} />)
+      supabase.auth.onAuthStateChange((event, session) => {
+        setSession(session)
+      })
     }
+  }, [])
 
-    return (
-        <div>
-            {!session && <Login />}
-            {session && (
-                <>
-                    <Navbar />
-                    <Files flag={flag} />
-                    <UploadButton flag={flag} setFlag={setFlag} />
-                </>
-            )}
-        </div>
-    )
+  if (reset) {
+    return (<Recovery token={token} />)
+  }
+
+  return (
+    <div>
+      {!session && <Login />}
+      {session && (
+        <>
+          <Navbar />
+          <Files flag={flag} />
+          <UploadButton flag={flag} setFlag={setFlag} />
+        </>
+      )}
+    </div>
+  )
 }
