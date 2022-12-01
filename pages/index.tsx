@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../utils/supabaseClient'
 
+import HomePage from "../components/home/"
 import Navbar from "../components/Navbar"
 import Login from '../components/Login.js'
 import Files from '../components/Files.js'
@@ -38,7 +39,8 @@ export default function Home() {
 
   return (
     <div>
-      {!session && <Login />}
+      {/*!session && <Login />*/}
+      {!session && <HomePage />}
       {session && (
         <>
           <Navbar />
