@@ -21,6 +21,12 @@ const VideoPlayer = ({ src, controls, partyId, creatorId, ws, playheadStart, scr
   const [duration, setDuration] = useState()
   const [audio, setAudio] = useState(true)
 
+  const subtitleSrc = () => {
+    const arr = src.split(".")
+    arr.splice(-1, 1, "vtt")
+    return arr.join(".")
+  }
+
   const hideSubtitles = () => {
     videoRef.current.textTracks[0].mode = "hidden"
   }
@@ -48,6 +54,7 @@ const VideoPlayer = ({ src, controls, partyId, creatorId, ws, playheadStart, scr
       className={styles.player}>
       <video 
         id="video"
+        crossOrigin="anonymous"
         onPlay={() => {
           if (controls) {
             handlePlay(partyId, creatorId, ws)
@@ -84,7 +91,7 @@ const VideoPlayer = ({ src, controls, partyId, creatorId, ws, playheadStart, scr
           label="English"
           kind="subtitles"
           srcLang="en"
-          src="/subtitle.vtt"
+          src={subtitleSrc()}
           default
         />
       </video>
