@@ -1,8 +1,8 @@
 @tailwind base;
 @tailwind components;
-@tailwind utilities;html,
+@tailwind utilities;
 
-body {
+html, body {
   padding: 0;
   margin: 0;
   font-family: 'Hind', sans-serif;;

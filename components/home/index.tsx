@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useRef } from "react"
+import Image from "next/image"
 import toast from "react-hot-toast"
 
 import ChatWindow from "./Chat"
@@ -35,8 +36,15 @@ export default function Home() {
 
   return (
     <div className="w-full h-[100vh] bg-black">
-      <VideoPlayer
+      <div className="absolute z-10 w-full text-center pt-2">
+        <Image
+          src="/Logo.png"
+          alt="fireplace logo"
+          height={50}
+          width={160}
         />
+      </div>
+      <VideoPlayer />
     </div>
   )
 }
@@ -56,6 +64,14 @@ const VideoPlayer = () => {
       onMouseMove={() => handleMouseMovement(containerRef.current, controlsRef.current)}
       id="video-player"
       className="relative overflow-hidden">
+      <div className="w-full text-center absolute top-20">
+        <h1 className="text-white text-4xl">
+          Experience cinema.
+        </h1>
+        <h2 className="text-white text-2xl">
+          With friends.
+        </h2>
+      </div>
       <video 
         id="video"
         autoPlay
@@ -67,11 +83,10 @@ const VideoPlayer = () => {
         onSeeked={() => handleSeeked(partyId, creatorId, ws)}
         ref={videoRef}
         onClick={() => togglePlay(videoRef.current)}
-        className="z-0 w-full h-auto"
+        className="z-0 w-auto h-screen mx-auto"
       />
       <div ref={controlsRef}>
       </div>
-
       <ChatWindow />
     </div>
   )
