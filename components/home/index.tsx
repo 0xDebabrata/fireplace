@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react"
 import Image from "next/image"
+import Link from "next/link"
 import toast from "react-hot-toast"
 
 import ChatWindow from "./Chat"
@@ -64,13 +65,18 @@ const VideoPlayer = () => {
       onMouseMove={() => handleMouseMovement(containerRef.current, controlsRef.current)}
       id="video-player"
       className="relative overflow-hidden">
-      <div className="w-full text-center absolute top-20">
+      <div className="w-full text-center absolute top-28">
         <h1 className="text-white text-4xl">
           Experience cinema.
         </h1>
-        <h2 className="text-white text-2xl">
+        <h2 className="text-white text-2xl mb-5">
           With friends.
         </h2>
+        <Link href={"/login"}>
+          <span className="px-4 text-sm py-1 border border-neutral-500 bg-neutral-500/40 text-neutral-200 rounded-full hover:border-neutral-400 hover:bg-neutral-500/60 duration-150 cursor-pointer">
+            Start watching &rarr;
+          </span>
+        </Link>
       </div>
       <video 
         id="video"
