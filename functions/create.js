@@ -1,30 +1,19 @@
 // Get video signed URL and send create request to server
-export const createWatchparty = async (id, clientId, supabase, ws, WebSocket, setConnected) => {
+export const createWatchparty = async (id, clientId, supabase, setLoading) => {
     const { data: watchparties, error } = await supabase
         .from("watchparties")
         .select("video_url")
         .eq("id", id)
 
     if (!error) {
-
-        ws.current = new WebSocket(`${process.env.NEXT_PUBLIC_WEBSOCKET_URL}/${clientId}`)
-
-        const payload = {
-            "method": "create",
-            "partyId": id,
-            "src": watchparties[0].video_url,
-            "clientId": clientId
-        }
-
-        ws.current.onopen = () => {
-            ws.current.send(JSON.stringify(payload))
-            console.log("create request sent")
-            setConnected(true)
-        }
-
+        const src = watchparties[0].video_url
+        await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/create?ownerId=${clientId}&partyId=${id}&src=${src}`, {
+            method: 'GET'
+        })
+        setLoading(false)
     } else {
         console.log(error)
-        alert("There was a problem")
+        throw error
     }
 }
 
