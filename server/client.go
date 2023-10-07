@@ -59,7 +59,7 @@ func (c *Client) readPump() {
         if messageType == websocket.TextMessage {
             msg := wsMessage{}
             json.Unmarshal([]byte(message), &msg)
-            if (msg.Method != "update" || msg.Message != "keepAlive") {
+            if (msg.Method != "update" && msg.Message != "keepAlive") {
                 log.Println(msg)
             }
 
