@@ -56,3 +56,14 @@ export const updatePlayhead = (partyId, ws) => {
 
   setTimeout(() => updatePlayhead(partyId, ws), 400);
 };
+
+export const keepAlive = (userId, ws) => {
+  const payload = {
+    method: "keepAlive",
+    clientId: userId,
+  };
+
+  ws.current.send(JSON.stringify(payload));
+
+  setTimeout(() => keepAlive(userId, ws), 25000);
+};

@@ -20,7 +20,6 @@ const Chat = ({ ws, partyId, messageList, setMessageList }) => {
                 "partyId": partyId,
                 "message": message
             }
-            console.log(payload)
             ws.current.send(JSON.stringify(payload))
         }
 

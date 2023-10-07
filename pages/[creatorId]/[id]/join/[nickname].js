@@ -9,10 +9,6 @@ import Loader from "../../../../components/Loading";
 import Sidebar from "../../../../components/sidebar/Sidebar";
 
 import {
-  handlePlay,
-  handlePause,
-  handleSeeked,
-  loadStartPosition,
   updatePlayhead,
   keepAlive,
 } from "../../../../functions/watchparty";
@@ -29,7 +25,6 @@ const Watch = () => {
   const [videoSrc, setVideoSrc] = useState(null);
   const [loading, setLoading] = useState(true);
   const [playheadStart, setPlayheadStart] = useState(0);
-  const [conn, setConn] = useState(false);
   const [denied, setDenied] = useState(true);
   const [messageList, setMessageList] = useState([]);
 
@@ -37,6 +32,7 @@ const Watch = () => {
 
   useEffect(() => {
     const clientId = supabase.auth.user().id;
+    let creator = false
 
     if (!clientId) {
       alert("You need to be logged in");
@@ -49,27 +45,106 @@ const Watch = () => {
 
       if (supabase.auth.session()) {
         if (creatorId === supabase.auth.user().id) {
+          creator = true
           setCreator(true);
           setCreatorUserId(creatorId);
         }
       }
 
       ws.current = new WebSocket(
-        `${process.env.NEXT_PUBLIC_WEBSOCKET_URL}/${clientId}`
+        `${process.env.NEXT_PUBLIC_WEBSOCKET_URL}?userId=${clientId}&partyId=${id}`
       );
 
-      // Send join watchparty request to server
-      const payload = {
-        method: "join",
-        clientId: clientId,
-        nickname: nickname,
-        partyId: id,
+      ws.current.onopen = () => {
+        // Send join watchparty request to server
+        const payload = {
+          method: "join",
+          clientId: clientId,
+          nickname: nickname,
+          partyId: id,
+        };
+        ws.current.send(JSON.stringify(payload));
       };
 
-      ws.current.onopen = () => {
-        ws.current.send(JSON.stringify(payload));
-        setConn(true);
+      ws.current.onmessage = (message) => {
+        const response = JSON.parse(message.data);
+        const vid = document.getElementById("video");
+
+        // Max participant limit reached
+        if (response.method === "denied") {
+          router.push("/denied");
+          setDenied(true);
+        }
+
+        if (response.method === "join") {
+          setVideoSrc(response.party.src);
+          setLoading(false);
+          setPlayheadStart(response.party.playhead);
+          setDenied(false);
+
+          const partyId = response.party.id;
+
+          if (creator) {
+            updatePlayhead(partyId, ws);
+          } else {
+            keepAlive(clientId, ws);
+          }
+        }
+
+        // New user joined watchparty
+        if (response.method === "new") {
+          toast(`${response.nickname} joined!`, {
+            icon: "✌️",
+            position: "top-right",
+            style: {
+              background: "#333",
+              color: "#fff",
+            },
+          });
+        }
+
+        // A user left the watchparty
+        if (response.method === "leave") {
+          toast(`${response.nickname} left!`, {
+            icon: "👋",
+            position: "top-right",
+            style: {
+              background: "#333",
+              color: "#fff",
+            },
+          });
+        }
+
+        if (response.method === "play") {
+          if (!creator) {
+            vid.play();
+          }
+        }
+
+        if (response.method === "pause") {
+          if (!creator) {
+            vid.pause();
+          }
+        }
+
+        if (response.method === "seeked") {
+          vid.currentTime = response.playhead;
+        }
+
+        if (response.method === "chat") {
+          setMessageList((oldArr) => {
+            return [
+              ...oldArr,
+              {
+                message: response.message,
+                sent: false,
+                nickname: response.nickname,
+              },
+            ];
+          });
+        }
       };
+
     }
 
     return () => {
@@ -80,87 +155,7 @@ const Watch = () => {
   }, [router.isReady, router.query]);
 
   useEffect(() => {
-    if (!conn) return;
-
-    ws.current.onmessage = (message) => {
-      const response = JSON.parse(message.data);
-      const vid = document.getElementById("video");
-
-      // Max participant limit reached
-      if (response.method === "denied") {
-        router.push("/denied");
-        setDenied(true);
-      }
-
-      if (response.method === "join") {
-        setVideoSrc(response.party.src);
-        setLoading(false);
-        setPlayheadStart(response.party.playhead);
-        setDenied(false);
-
-        const partyId = response.party.id;
-
-        if (creator) {
-          updatePlayhead(partyId, ws);
-        } else {
-          keepAlive(ws);
-        }
-      }
-
-      // New user joined watchparty
-      if (response.method === "new") {
-        toast(`${response.nickname} joined!`, {
-          icon: "✌️",
-          position: "top-right",
-          style: {
-            background: "#333",
-            color: "#fff",
-          },
-        });
-      }
-
-      // A user left the watchparty
-      if (response.method === "leave") {
-        toast(`${response.nickname} left!`, {
-          icon: "👋",
-          position: "top-right",
-          style: {
-            background: "#333",
-            color: "#fff",
-          },
-        });
-      }
-
-      if (response.method === "play") {
-        if (!creator) {
-          vid.play();
-        }
-      }
-
-      if (response.method === "pause") {
-        if (!creator) {
-          vid.pause();
-        }
-      }
-
-      if (response.method === "seeked") {
-        vid.currentTime = response.playhead;
-      }
-
-      if (response.method === "chat") {
-        setMessageList((oldArr) => {
-          return [
-            ...oldArr,
-            {
-              message: response.message,
-              sent: false,
-              nickname: response.nickname,
-            },
-          ];
-        });
-      }
-    };
-  }, [creator, conn]);
+  }, [creator]);
 
   return (
     <div>
