@@ -1,0 +1,32 @@
+{
+  "name": "fireplace",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^1.21.0",
+    "aws-sdk": "^2.1037.0",
+    "framer-motion": "^5.5.5",
+    "isomorphic-ws": "^4.0.1",
+    "next": "^12.3.2",
+    "react": "17.0.2",
+    "react-dom": "17.0.2",
+    "react-hot-toast": "^2.0.0",
+    "react-uuid": "^1.0.2",
+    "swr": "^1.0.1",
+    "ws": "^8.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "18.0.25",
+    "autoprefixer": "^10.4.13",
+    "eslint": "7.32.0",
+    "eslint-config-next": "11.0.1",
+    "postcss": "^8.4.19",
+    "tailwindcss": "^3.2.4"
+  }
+}
