@@ -65,7 +65,7 @@ const VideoPlayer = () => {
       onMouseMove={() => handleMouseMovement(containerRef.current, controlsRef.current)}
       id="video-player"
       className="relative overflow-hidden">
-      <div className="w-full text-center absolute top-28">
+      <div className="z-20 w-full text-center absolute top-28">
         <h1 className="text-white text-4xl">
           Experience cinema.
         </h1>
