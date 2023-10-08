@@ -1,5 +1,4 @@
-import React from 'react'
-import { useRouter } from 'next/router'
+import { useRouter } from 'next/navigation'
 import { supabase } from '../utils/supabaseClient'
 import toast from 'react-hot-toast'
 

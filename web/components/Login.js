@@ -1,8 +1,8 @@
 'use client'
 
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
-import { useRouter } from 'next/navigation'
 import Image from 'next/image'
+import { useEffect } from 'react'
 
 const images = [
   "https://film-grab.com/wp-content/uploads/photo-gallery/58%20(259).jpg?bwg=1547209454",
@@ -18,13 +18,24 @@ const images = [
 ]
 
 const Login = () => {
-  const router = useRouter()
   const supabase = createClientComponentClient()
 
   const login = async (provider) => {
-    await supabase.auth.signInWithOAuth({ provider })
+    await supabase.auth.signInWithOAuth({ 
+      provider, 
+      options : {
+        redirectTo: `${location.origin}/auth/callback`,
+      }
+    })
     //router.refresh()
   }
+
+  useEffect(() => {
+    const getSession = async () => {
+      console.log(await supabase.auth.getSession())
+    }
+    getSession()
+  }, [])
 
   return (
     <div className="flex h-screen flex-1 bg-neutral-900">

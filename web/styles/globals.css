@@ -6,7 +6,6 @@ html, body {
   padding: 0;
   margin: 0;
   font-family: 'Hind', sans-serif;;
-  background-color: #272727;
 }
 
 a {
@@ -38,7 +37,7 @@ p {
   width: 30px;
   height: 30px;
   margin: 54px auto;
-  animation: spin 2s linear infinite;
+  animation: spin 1s linear infinite;
 }
 
 @keyframes spin {

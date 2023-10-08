@@ -1,20 +1,31 @@
+'use client'
+
 import { useEffect, useRef } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import toast from "react-hot-toast"
+import { Toaster } from 'react-hot-toast'
+import { Session } from '@supabase/supabase-js'
 
 import ChatWindow from "./Chat"
 import { handleMouseMovement, togglePlay } from '../../functions/video'
 import { handlePause, handleSeeked } from '../../functions/watchparty'
 
-export default function Home() {
+interface HomeProps {
+  session: Session | null
+}
+
+export default function Home(props: HomeProps) {
+  const {
+    session
+  } = props
 
   // Show participant joining toast
   useEffect(() => {
     let timer1, timer2
     timer1 = setTimeout(() => {
       toast("Dan joined", {
-        duration: 2000,
+        duration: 3000,
         position: "top-right",
         icon: "👋",
         style: {
@@ -52,12 +63,12 @@ export default function Home() {
           width={240}
         />
       </div>
-      <VideoPlayer />
+      <VideoPlayer session={session} />
     </div>
   )
 }
 
-const VideoPlayer = () => {
+const VideoPlayer = ({ session }: HomeProps) => {
   const src = "https://sorxybcoqgcofqmjysrg.supabase.co/storage/v1/object/public/assets/Mars.mp4?t=2022-11-29T17%3A25%3A51.704Z"
   const partyId = 123
   const creatorId = 123
@@ -79,7 +90,7 @@ const VideoPlayer = () => {
         <h2 className="text-white text-2xl mb-5">
           with friends.
         </h2>
-        <Link href={"/login"}>
+        <Link href={session ? "/app" : "/login"}>
           <button className="px-5 text-sm py-1.5 border border-neutral-500 bg-neutral-500/40 text-neutral-200 rounded-full hover:border-neutral-400 hover:bg-neutral-500/60 duration-150 cursor-pointer">
             Start watching &rarr;
           </button>
@@ -101,6 +112,14 @@ const VideoPlayer = () => {
       <div ref={controlsRef}>
       </div>
       <ChatWindow />
+
+      <Toaster
+        toastOptions={{
+          style: {
+          minWidth: "300px"
+          }
+        }} 
+      />
     </div>
   )
 }
