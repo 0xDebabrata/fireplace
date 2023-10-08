@@ -1,9 +1,13 @@
-import Login from '../components/Login.js'
+import dynamic from 'next/dynamic'
+
+const ComponentWithNoSSR = dynamic(() => import('../components/Login'), {
+  ssr: false
+})
 
 export default function LoginPage() {
-    return (
-        <div>
-            <Login />
-        </div>
-    )
+  return (
+    <div>
+      <ComponentWithNoSSR />
+    </div>
+  )
 }
