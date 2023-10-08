@@ -8,7 +8,6 @@ import UploadButton from '../components/UploadButton'
 import Recovery from '../components/Recovery'
 
 export default function Home() {
-
   const [session, setSession] = useState(null)
   const [reset, setReset] = useState(false)
   const [token, setToken] = useState(null)
@@ -36,7 +35,6 @@ export default function Home() {
 
   return (
     <div>
-      {/*!session && <Login />*/}
       {!session && <HomePage />}
       {session && (
         <>

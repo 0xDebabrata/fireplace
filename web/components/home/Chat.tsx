@@ -5,27 +5,34 @@ export default function ChatWindow () {
   const [messages, setMessages] = useState([])
 
   useEffect(() => {
-    setTimeout(() => {
+    let timer1, timer2, timer3
+    timer1 = setTimeout(() => {
       setMessages(prev => [...prev, {
         text: "Welcome!",
         self: true,
         nickname: ""
       }])
-      setTimeout(() => {
-        setMessages(prev => [...prev, {
-          text: "Let the show begin!",
-          self: false,
-          nickname: "Theo"
-        }])
-      }, 2500);
-      setTimeout(() => {
-        setMessages(prev => [...prev, {
-          text: "Finally!!",
-          self: false,
-          nickname: "Dan"
-        }])
-      }, 2000);
     }, 6000);
+    timer2 = setTimeout(() => {
+      setMessages(prev => [...prev, {
+        text: "Let the show begin!",
+        self: false,
+        nickname: "Theo"
+      }])
+    }, 8500);
+    timer3 = setTimeout(() => {
+      setMessages(prev => [...prev, {
+        text: "Finally!!",
+        self: false,
+        nickname: "Dan"
+      }])
+    }, 8000);
+
+    return () => {
+      clearTimeout(timer1)
+      clearTimeout(timer2)
+      clearTimeout(timer3)
+    }
   }, [])
 
   if (!show) {
@@ -45,7 +52,11 @@ const ChatBubble = ({ message }) => {
   const [visible, setVisible] = useState(false)
 
   useEffect(() => {
-    setTimeout(() => setVisible(true), 100)
+    const timer = setTimeout(() => setVisible(true), 100)
+
+    return () => {
+      clearTimeout(timer)
+    }
   }, [])
 
   return (

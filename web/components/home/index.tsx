@@ -11,7 +11,8 @@ export default function Home() {
 
   // Show participant joining toast
   useEffect(() => {
-    setTimeout(() => {
+    let timer1, timer2
+    timer1 = setTimeout(() => {
       toast("Dan joined", {
         duration: 2000,
         position: "top-right",
@@ -21,28 +22,33 @@ export default function Home() {
           color: "white"
         }
       })
-      setTimeout(() => {
-        toast("Theo joined", {
-          duration: 2000,
-          position: "top-right",
-          icon: "👋",
-          style: {
-            backgroundColor: "rgb(39 39 42)",
-            color: "white"
-          }
-        })
-      }, 1500)
     }, 2000)
+    timer2 = setTimeout(() => {
+      toast("Theo joined", {
+        duration: 2000,
+        position: "top-right",
+        icon: "👋",
+        style: {
+          backgroundColor: "rgb(39 39 42)",
+          color: "white"
+        }
+      })
+    }, 3500)
+
+    return () => {
+      clearTimeout(timer1)
+      clearTimeout(timer2)
+    }
   }, [])
 
   return (
     <div className="w-full h-[100vh] bg-black">
-      <div className="absolute z-10 w-full text-center pt-2">
+      <div className="mt-10 absolute z-10 w-full text-center pt-2">
         <Image
           src="/Logo.png"
           alt="fireplace logo"
-          height={50}
-          width={160}
+          height={75}
+          width={240}
         />
       </div>
       <VideoPlayer />
@@ -65,17 +71,17 @@ const VideoPlayer = () => {
       onMouseMove={() => handleMouseMovement(containerRef.current, controlsRef.current)}
       id="video-player"
       className="relative overflow-hidden">
-      <div className="z-20 w-full text-center absolute top-28">
+      <div className="z-20 w-full text-center absolute top-36">
         <h1 className="text-white text-4xl">
-          Experience cinema.
+          experience cinema.
         </h1>
         <h2 className="text-white text-2xl mb-5">
-          With friends.
+          with friends.
         </h2>
         <Link href={"/login"}>
-          <span className="px-4 text-sm py-1 border border-neutral-500 bg-neutral-500/40 text-neutral-200 rounded-full hover:border-neutral-400 hover:bg-neutral-500/60 duration-150 cursor-pointer">
+          <button className="px-5 text-sm py-1.5 border border-neutral-500 bg-neutral-500/40 text-neutral-200 rounded-full hover:border-neutral-400 hover:bg-neutral-500/60 duration-150 cursor-pointer">
             Start watching &rarr;
-          </span>
+          </button>
         </Link>
       </div>
       <video 
