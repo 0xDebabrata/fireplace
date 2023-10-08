@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../utils/supabaseClient'
 import Image from 'next/image'
-import Link from 'next/link'
+import { useRouter } from 'next/router'
 
 import styles from '../styles/Navbar.module.css'
 
 const Navbar = () => {
+  const router = useRouter()
   const [session, setSession] = useState(null)
 
   useEffect(() => {
@@ -18,15 +19,14 @@ const Navbar = () => {
 
   return (
     <nav className={styles.navbar}>
-      <Link href="/" passHref>
-        <Image
-          className={styles.logo}
-          src="/Logo.png"
-          alt="fireplace logo"
-          height={50}
-          width={160}
-        />
-      </Link>
+      <Image
+        onClick={() => router.push("/")}
+        className={styles.logo}
+        src="/Logo.png"
+        alt="fireplace logo"
+        height={50}
+        width={160}
+      />
 
       {session ? <Logout /> : null } 
     </nav>
