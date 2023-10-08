@@ -1,7 +1,9 @@
+import type { AppProps } from 'next/app'
+
 import '../styles/globals.css'
 import { Toaster } from 'react-hot-toast'
 
-function MyApp({ Component, pageProps }) {
+function App({ Component, pageProps }: AppProps) {
   return ( 
       <>
         <Component {...pageProps} />
@@ -15,4 +17,4 @@ function MyApp({ Component, pageProps }) {
   )
 }
 
-export default MyApp
+export default App

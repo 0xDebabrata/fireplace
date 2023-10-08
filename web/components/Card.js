@@ -6,58 +6,66 @@ import toast from 'react-hot-toast'
 import styles from '../styles/Card.module.css'
 
 const Card = ({ name, url, list, setVideos }) => {
+  const router = useRouter()
 
-    const router = useRouter()
+  const handleDelete = async (name) => {
+    const { data: { user } } = await supabase.auth.getUser()
 
-    const handleDelete = async (name) => {
-        const reqObject = {
-            method: "POST",
-            body: JSON.stringify({
-                key: `${supabase.auth.user().id}/${name}`
-            })
-        }
-
-        // const promise = deleteFile(id)
-        const promise = new Promise( async (resolve, reject) => {
-            const { success, err } = await fetch("/api/deleteVideo", reqObject)
-            const { data, error } = await supabase
-                .from("fireplace-videos")
-                .delete()
-                .eq("name", name)
-
-            if (err || error) {
-                reject()
-                throw new Error(err)
-            } else {
-                const updatedList = list.filter(video => video.name != name)
-                setVideos(updatedList)
-                resolve()
-            }
-        })
-
-        toast.promise(promise, {
-            success: "Video deleted successfully",
-            loading: "Deleting video",
-            error: "Could not delete video"
-        })
+    const reqObject = {
+      method: "POST",
+      body: JSON.stringify({
+        key: `${user.id}/${name}`
+      })
     }
 
-    const handlePlay = async () => {
-        window.open(url, '_blank')
+    // const promise = deleteFile(id)
+    const promise = new Promise( async (resolve, reject) => {
+      const { success, err } = await fetch("/api/deleteVideo", reqObject)
+      const { data, error } = await supabase
+        .from("fireplace-videos")
+        .delete()
+        .eq("name", name)
+
+      if (err || error) {
+        reject()
+        throw new Error(err)
+      } else {
+        const updatedList = list.filter(video => video.name != name)
+        setVideos(updatedList)
+        resolve()
+      }
+    })
+
+    toast.promise(promise, {
+      success: "Video deleted successfully",
+      loading: "Deleting video",
+      error: "Could not delete video"
+    })
+  }
+
+  const handlePlay = async () => {
+    window.open(url, '_blank')
+  }
+
+  const createWatchparty = async (url) => {
+    const { data: { user } } = await supabase.auth.getUser()
+
+    const info = {
+      video_url: url,
+      creator_id: user.id
     }
 
-    const createWatchparty = async (url) => {
-        const info = {
-            video_url: url,
-            creator_id: supabase.auth.user().id
-        }
+    const { data, err } = await supabase
+      .from("watchparties")
+      .insert([info])
+      .select()
 
-        const { data, err } = await supabase
-            .from("watchparties")
-            .insert([info])
-
-        router.push(`/${supabase.auth.user().id}/${data[0].id}/create`)
+    if (err) {
+      console.error(err)
     }
+
+    router.push(`/${user.id}/${data[0].id}/create`)
+  }
 
     return (
         <div className={styles.container}>

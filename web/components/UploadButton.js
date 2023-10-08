@@ -13,22 +13,28 @@ const UploadButton = ({ flag, setFlag }) => {
   }
 
   const updateDb = async (fileName) => {
-    const { data, error } = await supabase
+    const { data: { user } } = await supabase.auth.getUser()
+    const { error } = await supabase
       .from("fireplace-videos")
       .insert([{
         name: fileName,
-        url: `https://d3v6emoc2mddy2.cloudfront.net/${supabase.auth.user().id}/${fileName}`,
-        user_id: supabase.auth.user().id
+        url: `https://d3v6emoc2mddy2.cloudfront.net/${user.id}/${fileName}`,
+        user_id: user.id
       }])
+    if (error) {
+      console.error(error)
+      throw error
+    }
   }
 
   const handleFileSelect = async () => {
     const file = fileInput.current.files[0]
+    const { data: { user } } = await supabase.auth.getUser()
 
     const reqObject = {
       method: "POST",
       body: JSON.stringify({
-        userId: supabase.auth.user().id,
+        userId: user.id,
         fileName: file.name,
         fileType: file.type
       })

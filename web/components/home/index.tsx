@@ -45,6 +45,7 @@ export default function Home() {
     <div className="w-full h-[100vh] bg-black">
       <div className="mt-10 absolute z-10 w-full text-center pt-2">
         <Image
+          className="mx-auto"
           src="/Logo.png"
           alt="fireplace logo"
           height={75}

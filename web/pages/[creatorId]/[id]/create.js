@@ -8,8 +8,10 @@ import Loader from '../../../components/Loading'
 import { createWatchparty, handleClick, copyLink } from '../../../functions/create'
 
 import styles from '../../../styles/Create.module.css'
+import { useSession } from '../../../utils/hooks/useSession'
 
 const Create = () => {
+  const session = useSession()
   const [loading, setLoading] = useState(true)
   const [creatorUserId, setCreatorUserId] = useState(null)
   const [partyId, setPartyId] = useState(null)
@@ -19,10 +21,10 @@ const Create = () => {
   const router = useRouter()
 
   useEffect(() => {
-    if (!supabase.auth.user()) return
+    if (!session) return
 
     setLoading(true)
-    const clientId = supabase.auth.user().id
+    const clientId = session.user.id
 
     if (router.isReady) {
       const { creatorId, id } = router.query
@@ -34,7 +36,7 @@ const Create = () => {
           createWatchparty(id, clientId, supabase, setLoading)
         }
       }
-    }, [router.isReady, router.query, supabase.auth.user()])
+    }, [router.isReady, router.query, session])
 
   return (
     <>

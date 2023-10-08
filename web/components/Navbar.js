@@ -1,21 +1,13 @@
-import { useState, useEffect } from 'react'
 import { supabase } from '../utils/supabaseClient'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
 
 import styles from '../styles/Navbar.module.css'
+import { useSession } from '../utils/hooks/useSession'
 
 const Navbar = () => {
   const router = useRouter()
-  const [session, setSession] = useState(null)
-
-  useEffect(() => {
-    setSession(supabase.auth.session())
-
-    supabase.auth.onAuthStateChange((event, session) => {
-      setSession(session)
-    })
-  }, [])
+  const session = useSession()
 
   return (
     <nav className={styles.navbar}>
@@ -28,14 +20,18 @@ const Navbar = () => {
         width={160}
       />
 
+      <Logout />
       {session ? <Logout /> : null } 
     </nav>
   )
 }
 
 const Logout = () => {
-  const handleLogout = () => {
-    supabase.auth.signOut()
+  const handleLogout = async () => {
+    const { error } = await supabase.auth.signOut()
+    if (error) {
+      console.error(error)
+    }
   }
 
   return (
@@ -49,7 +45,3 @@ const Logout = () => {
 }
 
 export default Navbar
-
-
-
-

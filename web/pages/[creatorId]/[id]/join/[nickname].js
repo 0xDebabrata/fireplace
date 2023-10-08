@@ -1,7 +1,6 @@
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 import WebSocket from "isomorphic-ws";
-import { supabase } from "../../../../utils/supabaseClient";
 import toast from "react-hot-toast";
 
 import VideoPlayer from "../../../../components/VideoPlayer";
@@ -14,8 +13,10 @@ import {
 } from "../../../../functions/watchparty";
 
 import styles from "../../../../styles/Watch.module.css";
+import { useSession } from "../../../../utils/hooks/useSession";
 
 const Watch = () => {
+  const session = useSession()
   const ws = useRef();
   const screenRef = useRef();
 
@@ -31,7 +32,9 @@ const Watch = () => {
   const router = useRouter();
 
   useEffect(() => {
-    const clientId = supabase.auth.user().id;
+    if (!session) return;
+
+    const clientId = session.user.id;
     let creator = false
 
     if (!clientId) {
@@ -43,8 +46,8 @@ const Watch = () => {
       const { creatorId, id, nickname } = router.query;
       setPartyId(id);
 
-      if (supabase.auth.session()) {
-        if (creatorId === supabase.auth.user().id) {
+      if (session) {
+        if (creatorId === session.user.id) {
           creator = true
           setCreator(true);
           setCreatorUserId(creatorId);
@@ -152,10 +155,7 @@ const Watch = () => {
         ws.current.close();
       }
     };
-  }, [router.isReady, router.query]);
-
-  useEffect(() => {
-  }, [creator]);
+  }, [session, router.isReady, router.query]);
 
   return (
     <div>
