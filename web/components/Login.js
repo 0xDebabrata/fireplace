@@ -2,7 +2,7 @@
 
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import Image from 'next/image'
-import { useEffect } from 'react'
+import Link from 'next/link'
 
 const images = [
   "https://film-grab.com/wp-content/uploads/photo-gallery/58%20(259).jpg?bwg=1547209454",
@@ -27,29 +27,28 @@ const Login = () => {
         redirectTo: `${location.origin}/auth/callback`,
       }
     })
-    //router.refresh()
   }
-
-  useEffect(() => {
-    const getSession = async () => {
-      console.log(await supabase.auth.getSession())
-    }
-    getSession()
-  }, [])
 
   return (
     <div className="flex h-screen flex-1 bg-neutral-900">
       <div className="flex flex-1 flex-col justify-center px-4 py-12 sm:px-6 lg:flex-none lg:px-20 xl:px-24">
         <div className="mx-auto w-full max-w-sm lg:w-96">
           <div>
-            <Image
-              className='-translate-x-6'
-              src="/Logo.png"
-              alt="fireplace logo"
-              height={75}
-              width={240}
-            />
-            <h2 className="mt-8 text-2xl font-bold leading-9 tracking-tight text-gray-300">
+            <Link
+              href={"/"}
+            >
+              <Image
+                className='-translate-x-6'
+                src="/Logo.png"
+                alt="fireplace logo"
+                height={75}
+                width={240}
+              />
+            </Link>
+            <h3 className="text-xl font-medium leading-9 tracking-tight text-yellow-500">
+              Watch movies, with friends.
+            </h3>
+            <h2 className="mt-8 text-2xl font-medium leading-9 tracking-tight text-gray-300">
               Sign in to your account
             </h2>
           </div>

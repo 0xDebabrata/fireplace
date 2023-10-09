@@ -12,7 +12,6 @@ export default async function LoginPage() {
   const supabase = createServerComponentClient<Database>({ cookies: () => cookieStore })
 
   const { data: { session } } = await supabase.auth.getSession()
-  console.log("session", session)
 
   return (
     <div>
