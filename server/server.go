@@ -1,11 +1,13 @@
 package main
 
 import (
-    "fmt"
-    "github.com/gorilla/websocket"
-    "github.com/rs/cors"
-    "log"
-    "net/http"
+	"fmt"
+	"log"
+	"net/http"
+	"sync"
+
+	"github.com/gorilla/websocket"
+	"github.com/rs/cors"
 )
 
 type watchparty struct {
@@ -19,7 +21,8 @@ var upgrader = websocket.Upgrader{
     WriteBufferSize: 1024,
 }
 
-var watchparties = make(map[string] *Party)
+//var watchparties = make(map[string] *Party)
+var watchparties = sync.Map{}
 
 func hello(w http.ResponseWriter, req *http.Request) {
     w.Header().Set("Access-Control-Allow-Origin", "*")
@@ -44,7 +47,7 @@ func handleCreateWatchparty(w http.ResponseWriter, r *http.Request) {
     }
 
     party := createParty(partyId, ownerId, src)
-    watchparties[partyId] = party
+    watchparties.Store(partyId, party)
     go party.run()
 
     fmt.Fprint(w, "Success")
@@ -70,9 +73,9 @@ func websocketHandler(w http.ResponseWriter, r *http.Request) {
     }
 
     if userId != "" {
-        party, ok := watchparties[partyId]
+        party, ok := watchparties.Load(partyId)
         if ok {
-            client := initClient(userId, conn, party)
+            client := initClient(userId, conn, party.(*Party))  // Go type assertion
             go client.readPump()
             go client.writePump()
         } else {
