@@ -52,7 +52,8 @@ const Card = ({ name, url, list, setVideos }) => {
 
     const info = {
       video_url: url,
-      creator_id: user.id
+      creator_id: user.id,
+      test: process.env.NEXT_PUBLIC_STAGE === 'dev' ? true : false,
     }
 
     const { data, err } = await supabase
