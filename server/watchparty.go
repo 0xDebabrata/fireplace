@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"log"
+	"sync"
 )
 
 type joinResponse struct {
@@ -37,7 +38,8 @@ func handleJoin(party PartyInfo, send chan []byte) {
     send <- msg
 }
 
-func broadcastJoinOrLeave(method string, clients map[*Client] bool, c *Client) {
+//func broadcastJoinOrLeave(method string, clients map[*Client] bool, c *Client) {
+func broadcastJoinOrLeave(method string, clients *sync.Map, c *Client) {
     broadcastMessage := broadcastMessage{
         Method: method,
         Nickname: c.nickname,
@@ -47,11 +49,14 @@ func broadcastJoinOrLeave(method string, clients map[*Client] bool, c *Client) {
         log.Printf("Error marshalling json %v", err)
         return
     }
-    for client := range clients {
-        if client.id != c.id {
-            client.send <- msg
+
+    clients.Range(func(key, value any) bool {
+        // key is of type *Client wheras value is a bool
+        if key.(*Client).id != c.id {
+            key.(*Client).send <- msg
         }
-    }
+        return true
+    })
 }
 
 func broadcastChatMessage(msg wsMessage, c *Client) {
