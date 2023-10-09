@@ -83,7 +83,7 @@ export const handleMouseMovement = (ref, controls) => {
     const t = setTimeout(() => {
         ref.setAttribute("timer", "")
         player.style.cursor = "none";
-        controls.style.visibility = "hidden" 
+        //controls.style.visibility = "hidden" 
     }, 3500)
 
     ref.setAttribute("timer", t)

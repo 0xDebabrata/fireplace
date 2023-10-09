@@ -22,7 +22,7 @@
   background-color: transparent;
   border: none;
   position: absolute;
-  bottom: 15px;
+  bottom: 11px;
   left: 10px;
   cursor: pointer;
 }
@@ -84,25 +84,27 @@
 .subtitle[data-state="hidden"] {
   color: white;
   background-color: transparent;
-  padding: 5px 10px;
+  padding: 4px 10px;
   border-radius: 5px;
   border: 1px solid white;
   position: absolute;
-  bottom: 15px;
+  bottom: 12px;
   left: 320px;
   cursor: pointer;
+  font-size: 12px;
 }
 
 .subtitle[data-state="active"] {
   color: black;
   background-color: white;
-  padding: 5px 10px;
+  padding: 4px 10px;
   border-radius: 5px;
   border: 1px solid white;
   position: absolute;
-  bottom: 15px;
+  bottom: 12px;
   left: 320px;
   cursor: pointer;
+  font-size: 12px;
 }
 
 .subtitle:focus {
@@ -129,14 +131,14 @@
 
 .audio {
   position: absolute;
-  bottom: 8px;
+  bottom: 16px;
   left: 160px;
   cursor: pointer;
 }
 
 .fullscreen {
   position: absolute;
-  bottom: 8px;
+  bottom: 16px;
   right: 15px;
   cursor: pointer;
 }

@@ -59,7 +59,7 @@ export default function ClientComponent({ params, session }: ClientProps) {
       const payload = {
         method: "join",
         clientId: clientId,
-        nickname: nickname,
+        nickname: decodeURIComponent(nickname),
         partyId: id,
       };
       ws.current?.send(JSON.stringify(payload));

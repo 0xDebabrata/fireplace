@@ -94,7 +94,7 @@ const VideoPlayer = ({ src, controls, partyId, creatorId, ws, playheadStart, scr
           default
         />
       </video>
-      <div className={styles.controls} ref={controlsRef}>
+      <div className="flex items-center" ref={controlsRef}>
         <div 
           onClick={(e) => {
             controls ?
@@ -114,10 +114,10 @@ const VideoPlayer = ({ src, controls, partyId, creatorId, ws, playheadStart, scr
             className={styles.toggle}>
             ▶︎
           </button>
-      }
-        {time && duration && 
+        }
+        {(time && duration) && 
           <p>{time} / {duration}</p>
-      }
+        }
         <div className={styles.audio}>
           <Image src={audio ? "/audio.png" : "/no-audio.png"}
             onClick={() => noAudio(videoRef.current, setAudio, setVolume, volumeRef.current)}
