@@ -1,11 +1,11 @@
 import React, { useRef } from 'react'
-import { supabase } from '../utils/supabaseClient'
-import toast from 'react-hot-toast'
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import toast, { Toaster } from 'react-hot-toast'
 
 import styles from '../styles/UploadButton.module.css'
 
 const UploadButton = ({ flag, setFlag }) => {
-
+  const supabase = createClientComponentClient()
   const fileInput = useRef(null)
 
   const handleClick = () => {
@@ -84,7 +84,14 @@ const UploadButton = ({ flag, setFlag }) => {
         className={styles.input} 
         type="file" accept="video/mp4,video/webm,video/ogg" hidden 
         ref={fileInput}
-        />
+      />
+      <Toaster
+        toastOptions={{
+          style: {
+          minWidth: "300px"
+          }
+        }} 
+      />
     </div>
   )
 }

@@ -1,11 +1,12 @@
 import { useRouter } from 'next/navigation'
-import { supabase } from '../utils/supabaseClient'
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import toast from 'react-hot-toast'
 
 import styles from '../styles/Card.module.css'
 
 const Card = ({ name, url, list, setVideos }) => {
   const router = useRouter()
+  const supabase = createClientComponentClient()
 
   const handleDelete = async (name) => {
     const { data: { user } } = await supabase.auth.getUser()

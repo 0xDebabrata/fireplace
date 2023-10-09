@@ -23,14 +23,13 @@ const Files = ({ flag }) => {
         setVideos(data)
         setLoading(false)
       }
-      setVideos([])
     }
 
     getFiles()
   }, [flag])
 
    return (
-     <div className='bg-neutral-900'>
+     <div className='py-5 bg-neutral-900'>
        {loading ? <Loader loading={loading} />
        : (videos && videos.length) ?
            videos.map((video, index) => {
