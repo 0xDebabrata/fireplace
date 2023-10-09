@@ -1,18 +1,16 @@
 import { cookies } from "next/headers"
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
 import { redirect } from "next/navigation"
+import JoinClientComponent from "./JoinClientComponent";
 
-import Navbar from "../../../../components/Navbar"
-import CreateClientComponent from './Create'
-
-interface CreateProps {
+interface JoinProps {
   params: {
     creatorId: string;
     id: string;
   }
 }
 
-const Create = async ({ params }: CreateProps) => {
+const Join = async ({ params }: JoinProps) => {
   const cookieStore = cookies()
   const supabase = createServerComponentClient({ cookies: () => cookieStore })
 
@@ -22,15 +20,7 @@ const Create = async ({ params }: CreateProps) => {
     redirect('/login')
   }
 
-  return (
-    <>
-      <Navbar session={session} />
-      <CreateClientComponent 
-        params={params}
-        session={session}
-      />
-    </>
-  )
+  return <JoinClientComponent params={params} />
 }
 
-export default Create 
+export default Join
