@@ -7,7 +7,6 @@ import { handleMouseMovement, noAudio, handleFullscreen, formatTime, seek, toggl
 import { handlePause, handlePlay, handleSeeked, loadStartPosition } from '../functions/watchparty'
 
 const VideoPlayer = ({ src, controls, partyId, creatorId, ws, playheadStart, screenRef }) => {
-
   const videoRef = useRef()
   const toggleRef = useRef()
   const progressRef = useRef()

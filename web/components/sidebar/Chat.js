@@ -3,10 +3,8 @@ import Image from "next/image"
 import ChatMessage from "./ChatMessage"
 
 import styles from "../../styles/Chat.module.css"
-import { useSession } from "../../utils/hooks/useSession"
 
-const Chat = ({ ws, partyId, messageList, setMessageList }) => {
-  const session = useSession()
+const Chat = ({ session, ws, partyId, messageList, setMessageList }) => {
   const [message, setMessage] = useState("")
 
   const addMessage = (e) => {

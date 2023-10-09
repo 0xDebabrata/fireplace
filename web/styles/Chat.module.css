@@ -30,18 +30,6 @@
     max-width: 100%;
 }
 
-.message {
-    margin-top: 3px;
-    margin-bottom: 3px;
-    margin-right: auto;
-    padding: 2px 10px;
-    border-radius: 7px;
-    max-width: 70%;
-    background-color: #696969;
-    white-space: pre-wrap;
-    word-wrap: break-word;
-}
-
 .chat div p {
     color: white;
 }

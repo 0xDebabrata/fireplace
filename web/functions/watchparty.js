@@ -38,12 +38,14 @@ export const handleSeeked = (id, creatorId, ws) => {
 // Load start position of video
 export const loadStartPosition = (playheadStart) => {
   const vid = document.getElementById("video");
+  if (!vid) return;
   vid.currentTime = playheadStart.toString();
 };
 
 // Periodically update playhead status
 export const updatePlayhead = (partyId, ws) => {
   const vid = document.getElementById("video");
+  if (!vid) return;
   const playhead = vid.currentTime;
 
   const payload = {
