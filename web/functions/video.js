@@ -3,10 +3,6 @@ export const togglePlay = (vid) => {
     vid[method]()
 }
 
-export const updateToggle = (vid, button) => {
-    button.textContent = vid.paused ? "▶︎" : "॥" 
-}
-
 export const updateVolume = (e, vid, setVolume, setAudio) => {
     vid.volume = e.currentTarget.value
     setVolume(e.currentTarget.value)
@@ -83,7 +79,7 @@ export const handleMouseMovement = (ref, controls) => {
     const t = setTimeout(() => {
         ref.setAttribute("timer", "")
         player.style.cursor = "none";
-        //controls.style.visibility = "hidden" 
+        controls.style.visibility = "hidden" 
     }, 3500)
 
     ref.setAttribute("timer", t)

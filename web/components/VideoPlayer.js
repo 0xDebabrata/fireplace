@@ -2,13 +2,13 @@ import styles from "../styles/VideoPlayer.module.css"
 
 import {useRef, useEffect, useState} from "react"
 import Image from "next/image"
+import { PlayIcon, PauseIcon } from "@heroicons/react/24/solid"
 
-import { handleMouseMovement, noAudio, handleFullscreen, formatTime, seek, togglePlay, updateProgress, updateToggle, updateVolume } from '../functions/video'
+import { handleMouseMovement, noAudio, handleFullscreen, formatTime, seek, togglePlay, updateProgress, updateVolume } from '../functions/video'
 import { handlePause, handlePlay, handleSeeked, loadStartPosition } from '../functions/watchparty'
 
 const VideoPlayer = ({ src, controls, partyId, creatorId, ws, playheadStart, screenRef }) => {
   const videoRef = useRef()
-  const toggleRef = useRef()
   const progressRef = useRef()
   const containerRef = useRef()
   const volumeRef = useRef()
@@ -19,6 +19,7 @@ const VideoPlayer = ({ src, controls, partyId, creatorId, ws, playheadStart, scr
   const [time, setTime] = useState()
   const [duration, setDuration] = useState()
   const [audio, setAudio] = useState(true)
+  const [isPaused, setIsPaused] = useState(true)
 
   const subtitleSrc = () => {
     const arr = src.split(".")
@@ -55,15 +56,15 @@ const VideoPlayer = ({ src, controls, partyId, creatorId, ws, playheadStart, scr
         id="video"
         crossOrigin="anonymous"
         onPlay={() => {
+          setIsPaused(videoRef.current.paused)
           if (controls) {
             handlePlay(partyId, creatorId, ws)
-            updateToggle(videoRef.current, toggleRef.current)
           }
         }}
         onPause={() =>  {
+          setIsPaused(videoRef.current.paused)
           if (controls) {
             handlePause(partyId, creatorId, ws)
-            updateToggle(videoRef.current, toggleRef.current)
           }
         }}
         onSeeked={() => {
@@ -78,11 +79,6 @@ const VideoPlayer = ({ src, controls, partyId, creatorId, ws, playheadStart, scr
           hideSubtitles()
         }}
         ref={videoRef}
-        onClick={() => {
-          if (controls) {
-            togglePlay(videoRef.current)
-          }
-        }}
         className={styles.viewer} 
         src={src}
       >
@@ -94,7 +90,21 @@ const VideoPlayer = ({ src, controls, partyId, creatorId, ws, playheadStart, scr
           default
         />
       </video>
-      <div className="flex items-center" ref={controlsRef}>
+      <div className="" ref={controlsRef}>
+        <div 
+          className="absolute flex justify-center items-center top-0 bottom-0 left-0 right-0"
+          onClick={() => {
+            if (controls) {
+              togglePlay(videoRef.current)
+            }
+          }}
+        >
+          {isPaused ? 
+            <PlayIcon className="h-20 w-20 text-white" />
+          :
+            controls ? <PauseIcon className="h-20 w-20 text-white" /> : null
+          }
+        </div>
         <div 
           onClick={(e) => {
             controls ?
@@ -108,12 +118,16 @@ const VideoPlayer = ({ src, controls, partyId, creatorId, ws, playheadStart, scr
             className={styles.progressFilled} />
         </div>
         {controls &&
-          <button 
-            ref={toggleRef}
+          <div
+            className="absolute bottom-4 left-3"
             onClick={() => togglePlay(videoRef.current)}
-            className={styles.toggle}>
-            ▶︎
-          </button>
+          >
+          {isPaused ? 
+            <PlayIcon className="h-6 w-6 text-white" />
+            :
+            <PauseIcon className="h-6 w-6 text-white" />
+          }
+          </div>
         }
         {(time && duration) && 
           <p>{time} / {duration}</p>
