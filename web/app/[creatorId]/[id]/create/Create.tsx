@@ -48,13 +48,13 @@ export default function CreateClientComponent(props: CreateClientProps) {
       <div className={styles.container}>
         <div className={styles.wrapper}>
           <input 
-            className={styles.input}
+            className="px-3 py-1.5 w-full rounded-md bg-neutral-800 text-sm text-neutral-200"
             value={nickname}
             onChange={e => setNickname(e.target.value)}
             placeholder="Enter a nickname" />
           <button
             onClick={() => handleClick(nickname, creatorUserId, partyId, toast, router)}
-            className={styles.button}
+            className="px-4 py-1.5 my-4 text-sm bg-yellow-500 text-neutral-800 rounded-md hover:bg-yellow-400 duration-150"
             disabled={loading}
           >
             {loading ? "Creating watchparty" : "Join watchparty"}
@@ -64,11 +64,19 @@ export default function CreateClientComponent(props: CreateClientProps) {
         <Loader loading={loading} />
         {!loading && (
           <div className={styles.wrapper}>
-            <p>Share the following link</p>
-            <input id="link" type="text" readOnly={true} value={`${process.env.NEXT_PUBLIC_SITE_URL}/${link}`} className={styles.url} />
+            <p className='text-left pb-3 text-sm text-neutral-300'>
+              Others can join using the link below
+            </p>
+            <input 
+              id="link"
+              type="text"
+              readOnly={true}
+              value={`${process.env.NEXT_PUBLIC_SITE_URL}/${link}`}
+              className="px-3 py-1.5 w-full rounded-md bg-neutral-800 text-sm text-neutral-200"
+            />
             <button 
               onClick={() => copyLink(toast)}
-              className={styles.copyButton}
+              className="px-4 py-1.5 my-4 text-sm text-neutral-200 border border-neutral-500 hover:bg-neutral-600 rounded-md duration-150"
             >
               Copy link
             </button>

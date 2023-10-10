@@ -52,6 +52,7 @@ const Chat = ({ session, ws, partyId, messageList, setMessageList }) => {
           onChange={(e) => setMessage(e.currentTarget.value)}
           type="text"
           placeholder="Enter message"
+          className="text-sm text-neutral-200"
         />
         <button
           type="submit"

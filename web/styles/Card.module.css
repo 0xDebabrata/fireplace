@@ -61,21 +61,6 @@
     fill: #FFB015;
 }
 
-.button {
-    height: 30px;
-    width: 80px;
-    background-color: #4B4B4B;
-    border: none;
-    border-radius: 7px;
-    margin-right: 20px;
-    cursor: pointer;
-    color: #FFB015;
-    font-family: "Hind";
-    font-size: 16px;
-    transition: 0.2s;
-    line-height: 0;
-}
-
 .button:hover {
     color: black;
     background-color: #FFB015;

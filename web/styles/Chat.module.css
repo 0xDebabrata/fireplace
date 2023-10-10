@@ -39,14 +39,12 @@
     border-radius: 7px;
     border: 1px solid #696969;
     background-color: black;
-    font-family: "Hind";
     color: white;
     padding: 0 10px;
 }
 
 .container input::placeholder {
     color: white;
-    font-family: "Hind";
 }
 
 .container input:focus {
