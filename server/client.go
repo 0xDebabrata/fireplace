@@ -68,8 +68,10 @@ func (c *Client) readPump() {
                 c.party.join <- c
             } else if msg.Method == "play" {
                 c.party.broadcast <- message
+                c.party.party.IsPlaying = true
             } else if msg.Method == "pause" {
                 c.party.broadcast <- message
+                c.party.party.IsPlaying = false
             } else if msg.Method == "seeked" {
                 c.party.party.Playhead = msg.Playhead
                 c.party.broadcast <- message

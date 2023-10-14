@@ -25,6 +25,13 @@ type chatMessage struct {
     Nickname    string      `json:"nickname"`
 }
 
+type partyStatus struct {
+    Id          string      `json:"id"`
+    ClientId    string      `json:"clientId"`
+    Playhead    float32     `json:"playhead"`
+    IsPlaying   bool        `json:"isPlaying"`
+}
+
 func handleJoin(party PartyInfo, send chan []byte) {
     joinResp := joinResponse{
         Method: "join",
@@ -73,4 +80,19 @@ func broadcastChatMessage(msg wsMessage, c *Client) {
         return
     }
     c.party.broadcast <- resp
+}
+
+func broadcastWatchpartyStatus(p *Party) {
+    data := partyStatus{
+        Id: p.party.Id,
+        ClientId: p.party.OwnerId,
+        IsPlaying: p.party.IsPlaying,
+        Playhead: p.party.Playhead,
+    }
+    resp, err := json.Marshal(data)
+    if err != nil {
+        log.Printf("Error marshalling json %v", err)
+        return
+    }
+    p.broadcast <- resp
 }

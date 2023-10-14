@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"log"
 	"sync"
+	"time"
 )
 
 type PartyInfo struct {
@@ -11,6 +12,7 @@ type PartyInfo struct {
     OwnerId     string      `json:"ownerId"`
     Src         string      `json:"src"`
     Playhead    float32     `json:"playhead"`
+    IsPlaying   bool        `json:"isPlaying"`
 }
 
 type Party struct {
@@ -29,6 +31,7 @@ func createParty(id string, ownerId string, src string) *Party {
             OwnerId: ownerId,
             Src: src,
             Playhead: 0,
+            IsPlaying: false,
         },
         //clients: make(map[*Client]bool),
         clients: sync.Map{},
@@ -40,6 +43,8 @@ func createParty(id string, ownerId string, src string) *Party {
 
 func (p *Party) run() {
     log.Println("watchparty " + p.party.Id + " live.")
+    go p.broadcastStatus()
+
     for {
         select {
         case client := <-p.join:
@@ -75,6 +80,26 @@ func (p *Party) run() {
                 }
                 return true
             })
+        }
+    }
+}
+
+func (p *Party) broadcastStatus() {
+    ticker := time.NewTicker(2000 * time.Millisecond)
+    done := make(chan bool)
+
+    defer func() {
+        ticker.Stop()
+        done <- true
+        log.Printf("%s party ticker stopped\n", p.party.Id)
+    }()
+
+    for {
+        select {
+        case <- done:
+            return
+        case <-ticker.C:
+            broadcastWatchpartyStatus(p)
         }
     }
 }

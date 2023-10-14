@@ -10,12 +10,6 @@ import (
 	"github.com/rs/cors"
 )
 
-type watchparty struct {
-    id string
-    ownerId string
-    src string
-}
-
 var upgrader = websocket.Upgrader{
     ReadBufferSize: 1024,
     WriteBufferSize: 1024,

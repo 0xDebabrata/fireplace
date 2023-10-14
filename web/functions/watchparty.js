@@ -45,18 +45,17 @@ export const loadStartPosition = (playheadStart) => {
 // Periodically update playhead status
 export const updatePlayhead = (partyId, ws) => {
   const vid = document.getElementById("video");
-  if (!vid) return;
-  const playhead = vid.currentTime;
+  const playhead = vid?.currentTime;
 
   const payload = {
     method: "update",
     partyId: partyId,
-    playhead: playhead,
+    playhead: playhead || 0,
   };
 
   ws.current.send(JSON.stringify(payload));
 
-  setTimeout(() => updatePlayhead(partyId, ws), 400);
+  setTimeout(() => updatePlayhead(partyId, ws), 300);
 };
 
 export const keepAlive = (userId, ws) => {
