@@ -28,6 +28,7 @@ export default function ClientComponent({ params, session }: ClientProps) {
   const ws = useRef<WebSocket | null>(null);
   const screenRef = useRef<HTMLDivElement | null>(null);
 
+  const [autoplay, setAutoplay] = useState(false);
   const [creatorUserId, setCreatorUserId] = useState<string | null>(null);
   const [partyId, setPartyId] = useState<string | null>(null);
   const [creator, setCreator] = useState(false);
@@ -83,9 +84,14 @@ export default function ClientComponent({ params, session }: ClientProps) {
         setPlayheadStart(response.party.playhead);
         setDenied(false);
 
-        const partyId = response.party.id;
+        // Start playback if owner's video is playing
+        // This helps auto start the client's video if they join mid-stream.
+        if (response.party.isPlaying) {
+          setAutoplay(true)
+        }
 
         if (creator) {
+          const partyId = response.party.id;
           updatePlayhead(partyId, ws);
         } else {
           keepAlive(clientId, ws);
@@ -169,6 +175,7 @@ export default function ClientComponent({ params, session }: ClientProps) {
                 ws={ws}
                 playheadStart={playheadStart}
                 screenRef={screenRef}
+                autoplay={autoplay}
               />
             ) : (
               <VideoPlayer
@@ -179,6 +186,7 @@ export default function ClientComponent({ params, session }: ClientProps) {
                 partyId=''
                 creatorId=''
                 ws={null}
+                autoplay={autoplay}
               />
             )}
 

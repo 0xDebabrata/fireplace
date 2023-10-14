@@ -7,7 +7,7 @@ import { PlayIcon, PauseIcon } from "@heroicons/react/24/solid"
 import { handleMouseMovement, noAudio, handleFullscreen, formatTime, seek, togglePlay, updateProgress, updateVolume } from '../functions/video'
 import { handlePause, handlePlay, handleSeeked, loadStartPosition } from '../functions/watchparty'
 
-const VideoPlayer = ({ src, controls, partyId, creatorId, ws, playheadStart, screenRef }) => {
+const VideoPlayer = ({ autoplay, src, controls, partyId, creatorId, ws, playheadStart, screenRef }) => {
   const videoRef = useRef()
   const progressRef = useRef()
   const containerRef = useRef()
@@ -81,6 +81,7 @@ const VideoPlayer = ({ src, controls, partyId, creatorId, ws, playheadStart, scr
         ref={videoRef}
         className={styles.viewer} 
         src={src}
+        autoPlay={autoplay}
       >
         <track 
           label="English"
