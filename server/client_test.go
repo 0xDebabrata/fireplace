@@ -6,7 +6,7 @@ import (
 	"os/signal"
 	"testing"
 	"time"
-	"http"
+	"net/http"
 	"github.com/gorilla/websocket"
 )
 
