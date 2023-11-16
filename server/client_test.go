@@ -8,7 +8,7 @@ import (
 	"testing"
 	"time"
 	"net/http"
-	"net/url"
+	// "net/url"
 	"github.com/gorilla/websocket"
 )
 
@@ -36,7 +36,7 @@ func createClient() {
 func wsClient() {
 	interrupt := make(chan os.Signal, 1)
 	signal.Notify(interrupt, os.Interrupt)
-	wsUrl = "ws://localhost:6969/ws?userId=user-234&partyId=party-123"
+	wsUrl := "ws://localhost:6969/ws?userId=user-234&partyId=party-123"
 
 	log.Println("Connecting to", wsUrl)
 	c, _, err := websocket.DefaultDialer.Dial(wsUrl, nil)
