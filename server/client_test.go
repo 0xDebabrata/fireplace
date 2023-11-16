@@ -38,7 +38,7 @@ func wsClient() {
 	u := url.URL{
 		Scheme: "ws",
 		Host: "localhost:6969",
-		Path: "/ws?userId=user-234&partyId=party-123"
+		Path: "/ws?userId=user-234&partyId=party-123",
 	}
 	log.Printf("connecting to %s", u.String())
 
