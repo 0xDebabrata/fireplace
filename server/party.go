@@ -48,18 +48,10 @@ func (p *Party) run() {
 	go p.broadcastStatus(done)
 
 	// watchparty will be terminated after this ticker ticks
-	ticker := time.NewTicker(5 * time.Second)
+	ticker := time.NewTicker(24 * time.Hour)
 	defer func() {
-		log.Println(watchparties)
-		watchparties.Range(func(key, value any) bool {
-			log.Println(key)
-			return true
-		})
+		log.Printf("Party %s terminated", p.party.Id)
 		watchparties.Delete(p.party.Id)		// Remove watchparty from map
-		watchparties.Range(func(key, value any) bool {
-			log.Println(key)
-			return true
-		})
 		done <- true  // close broadcastStatus goroutine
 		ticker.Stop() // close watchparty
 	}()
@@ -102,7 +94,6 @@ func (p *Party) run() {
 
 		case <-ticker.C:
 			// close the party after 24 hours
-			log.Printf("Party %s terminated", p.party.Id)
 			return
 		}
 
@@ -114,7 +105,6 @@ func (p *Party) broadcastStatus(done chan bool) {
 
 	defer func() {
 		ticker.Stop()
-		log.Printf("%s broadcast stopped\n", p.party.Id)
 	}()
 
 	for {
