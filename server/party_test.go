@@ -11,7 +11,7 @@ func TestRun(t *testing.T) {
 	time.Sleep(8 * time.Second)
 }
 
-func TestRemoval {
+func TestWatchpartyRemoval(t *testing.T) {
 	go main()
 	url := "http://localhost:6969/create?ownerId=user-123&partyId=party-123&src=https://example.com"
 
@@ -21,6 +21,6 @@ func TestRemoval {
 	if err != nil {
 		log.Println("error making request", err)
 	}
-	
+
 	time.Sleep(8 * time.Second)
 }
