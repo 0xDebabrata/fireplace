@@ -13,10 +13,10 @@ import (
 func TestClient(t *testing.T) {
 	log.Println("Test started.")
 	go main()
-	time.Sleep(2 * time.Second)
+	time.Sleep(1 * time.Second)
 	log.Println("Woke up, creating client now")
 	createClient()
-	time.Sleep(12*time.Second)
+	time.Sleep(35*time.Second)
 }
 
 func createClient() {
@@ -55,7 +55,7 @@ func wsClient() {
 	}()
 
 	// Close WS connection after 4s
-	time.Sleep(4 * time.Second)
+	time.Sleep(2 * time.Second)
 	log.Println("Client closing connection.")
 	err = c.WriteMessage(websocket.CloseMessage, websocket.FormatCloseMessage(websocket.CloseNormalClosure, ""))
 	if err != nil {
