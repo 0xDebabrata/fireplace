@@ -48,9 +48,8 @@ func (p *Party) run() {
 	go p.broadcastStatus(done)
 
 	// watchparty will be terminated after this ticker ticks
-	ticker := time.NewTicker(5 * time.Second)
+	ticker := time.NewTicker(24 * time.Hour)
 	defer func() {
-		log.Println("gg")
 		done <- true  // close broadcastStatus goroutine
 		ticker.Stop() // close watchparty
 	}()
@@ -111,7 +110,6 @@ func (p *Party) broadcastStatus(done chan bool) {
 	for {
 		select {
 		case <-done:
-			log.Println("Received message.")
 			return
 		case <-ticker.C:
 			broadcastWatchpartyStatus(p)
