@@ -2,11 +2,13 @@ package main
 
 import (
 	// "fmt"
+	"log"
 	"os"
 	"os/signal"
 	"testing"
 	"time"
 	"net/http"
+	"net/url"
 	"github.com/gorilla/websocket"
 )
 
@@ -22,7 +24,7 @@ func createClient() {
 
 	// create watchparty
 	resp, err := http.Get(url)
-	log.Println(string(resp))
+	log.Println(resp.Body)
 	if err != nil {
 		log.Println("error making request", err)
 	}
