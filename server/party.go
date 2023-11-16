@@ -43,7 +43,16 @@ func createParty(id string, ownerId string, src string) *Party {
 
 func (p *Party) run() {
     log.Println("watchparty " + p.party.Id + " live.")
-    go p.broadcastStatus()
+    
+    done = make(chan bool)
+    go p.broadcastStatus(done)
+    
+    // watchparty will be terminated after this ticker ticks
+    ticker := time.NewTicker(24 * time.Hour)
+    defer func() {
+        done <-true // close broadcastStatus goroutine
+        ticker.Stop() // close watchparty
+    }()
 
     for {
         select {
@@ -81,16 +90,19 @@ func (p *Party) run() {
                 return true
             })
         }
+
+        case t := <-ticker.C:
+            // close the party after 24 hours
+            log.Prinf("Party %s terminated", p.party.Id)
+            return
     }
 }
 
-func (p *Party) broadcastStatus() {
+func (p *Party) broadcastStatus(done chan bool) {
     ticker := time.NewTicker(2000 * time.Millisecond)
-    done := make(chan bool)
 
     defer func() {
         ticker.Stop()
-        done <- true
         log.Printf("%s party ticker stopped\n", p.party.Id)
     }()
 
