@@ -20,7 +20,7 @@ func TestClient(t *testing.T) {
 }
 
 func createClient() {
-	url := "http://localhost:6969/create?userId=user-123&partyId=party-123&src=https://example.com"
+	url := "http://localhost:6969/create?ownerId=user-123&partyId=party-123&src=https://example.com"
 
 	// create watchparty
 	resp, err := http.Get(url)
