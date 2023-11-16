@@ -14,7 +14,7 @@ import (
 
 func TestClient(t *testing.T) {
 	go main()
-	time.Sleep(1 * time.Second)
+	time.Sleep(2 * time.Second)
 	createClient()
 	time.Sleep(12*time.Second)
 }
