@@ -11,11 +11,11 @@ import (
 func TestClient(t *testing.T) {
 	go main()
 	time.Sleep(1 * time.Second)
-	createClient()
+	createParty()
 	time.Sleep(35*time.Second)
 }
 
-func createClient() {
+func createParty() {
 	url := "http://localhost:6969/create?ownerId=user-123&partyId=party-123&src=https://example.com"
 
 	// create watchparty

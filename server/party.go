@@ -48,7 +48,7 @@ func (p *Party) run() {
 	go p.broadcastStatus(done)
 
 	// watchparty will be terminated after this ticker ticks
-	ticker := time.NewTicker(24 * time.Hour)
+	ticker := time.NewTicker(5 * time.Second)
 	defer func() {
 		watchparties.Delete(p.party.Id)		// Remove watchparty from map
 		watchparties.Range(func(key, value any) bool {
