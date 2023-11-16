@@ -30,7 +30,7 @@ func createClient() {
 	}
 
 	// join as client
-	wsClient()
+	go wsClient()
 }
 
 func wsClient() {
