@@ -50,7 +50,7 @@ func (p *Party) run() {
 	// watchparty will be terminated after this ticker ticks
 	ticker := time.NewTicker(5 * time.Second)
 	defer func() {
-		
+		log.Println("gg")
 		done <- true  // close broadcastStatus goroutine
 		ticker.Stop() // close watchparty
 	}()
