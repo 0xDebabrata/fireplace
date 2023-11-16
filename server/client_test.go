@@ -11,8 +11,10 @@ import (
 )
 
 func TestClient(t *testing.T) {
+	log.Println("Test started.")
 	go main()
 	time.Sleep(2 * time.Second)
+	log.Println("Woke up, creating client now")
 	createClient()
 	time.Sleep(12*time.Second)
 }
@@ -22,7 +24,7 @@ func createClient() {
 
 	// create watchparty
 	resp, err := http.Get(url)
-	log.Println(resp.Body)
+	log.Println("HTTP Response", resp.Body)
 	if err != nil {
 		log.Println("error making request", err)
 	}
