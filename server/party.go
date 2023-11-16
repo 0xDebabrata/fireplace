@@ -105,7 +105,7 @@ func (p *Party) broadcastStatus(done chan bool) {
 
 	defer func() {
 		ticker.Stop()
-		log.Printf("%s party ticker stopped\n", p.party.Id)
+		log.Printf("%s broadcast stopped\n", p.party.Id)
 	}()
 
 	for {
