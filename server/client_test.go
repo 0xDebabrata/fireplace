@@ -68,5 +68,6 @@ func wsClient() {
 				log.Println("write:", err)
 				return
 			}
+		}
 	}
 }
