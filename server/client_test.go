@@ -1,20 +1,16 @@
 package main
 
 import (
-	// "fmt"
 	"log"
 	"testing"
 	"time"
 	"net/http"
-	// "net/url"
 	"github.com/gorilla/websocket"
 )
 
 func TestClient(t *testing.T) {
-	log.Println("Test started.")
 	go main()
 	time.Sleep(1 * time.Second)
-	log.Println("Woke up, creating client now")
 	createClient()
 	time.Sleep(35*time.Second)
 }

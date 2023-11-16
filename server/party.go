@@ -50,6 +50,11 @@ func (p *Party) run() {
 	// watchparty will be terminated after this ticker ticks
 	ticker := time.NewTicker(24 * time.Hour)
 	defer func() {
+		watchparties.Delete(p.party.Id)		// Remove watchparty from map
+		watchparties.Range(func(key, value any) bool {
+			log.Println(key)
+			return true
+		})
 		done <- true  // close broadcastStatus goroutine
 		ticker.Stop() // close watchparty
 	}()
