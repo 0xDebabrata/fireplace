@@ -56,7 +56,7 @@ func wsClient() {
 
 	// Close WS connection after 4s
 	time.Sleep(4 * time.Second)
-
+	log.Println("Client closing connection.")
 	err := c.WriteMessage(websocket.CloseMessage, websocket.FormatCloseMessage(websocket.CloseNormalClosure, ""))
 	if err != nil {
 		log.Println("write close:", err)
