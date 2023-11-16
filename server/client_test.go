@@ -36,15 +36,10 @@ func createClient() {
 func wsClient() {
 	interrupt := make(chan os.Signal, 1)
 	signal.Notify(interrupt, os.Interrupt)
+	wsUrl = "ws://localhost:6969/ws?userId=user-234&partyId=party-123"
 
-	u := url.URL{
-		Scheme: "ws",
-		Host: "localhost:6969",
-		Path: "/ws?userId=user-234&partyId=party-123",
-	}
-	log.Printf("connecting to %s", u.String())
-
-	c, _, err := websocket.DefaultDialer.Dial(u.String(), nil)
+	log.Println("Connecting to", wsUrl)
+	c, _, err := websocket.DefaultDialer.Dial(wsUrl, nil)
 	if err != nil {
 		log.Fatal("dial:", err)
 	}
