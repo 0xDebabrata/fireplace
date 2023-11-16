@@ -50,7 +50,7 @@ func (p *Party) run() {
 	// watchparty will be terminated after this ticker ticks
 	ticker := time.NewTicker(5 * time.Second)
 	defer func() {
-		log.println(watchparties)
+		log.Println(watchparties)
 		watchparties.Range(func(key, value any) bool {
 			log.Println(key)
 			return true
