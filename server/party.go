@@ -111,6 +111,7 @@ func (p *Party) broadcastStatus(done chan bool) {
 	for {
 		select {
 		case <-done:
+			log.Println("Received message.")
 			return
 		case <-ticker.C:
 			broadcastWatchpartyStatus(p)
