@@ -3,6 +3,8 @@ package main
 import (
 	"testing"
 	"time"
+	"net/http"
+	"log"
 )
 
 func TestRun(t *testing.T) {
