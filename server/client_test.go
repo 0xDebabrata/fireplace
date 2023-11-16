@@ -43,10 +43,7 @@ func wsClient() {
 	}
 	defer c.Close()
 
-	done := make(chan struct{})
-
 	go func() {
-		defer close(done)
 		for {
 			_, message, err := c.ReadMessage()
 			if err != nil {
@@ -57,19 +54,26 @@ func wsClient() {
 		}
 	}()
 
-	ticker := time.NewTicker(time.Second)
-	defer ticker.Stop()
+	// Close WS connection after 4s
+	time.Sleep(4 * time.Second)
 
-	for {
-		select {
-		case <-done:
-			return
-		case t := <-ticker.C:
-			err := c.WriteMessage(websocket.TextMessage, []byte(t.String()))
-			if err != nil {
-				log.Println("write:", err)
-				return
-			}
-		}
+	err := c.WriteMessage(websocket.CloseMessage, websocket.FormatCloseMessage(websocket.CloseNormalClosure, ""))
+	if err != nil {
+		log.Println("write close:", err)
+		return
 	}
+			
+	// ticker := time.NewTicker(time.Second)
+	// defer ticker.Stop()
+
+	// for {
+	// 	select {
+	// 	case t := <-ticker.C:
+	// 		err := c.WriteMessage(websocket.TextMessage, []byte(t.String()))
+	// 		if err != nil {
+	// 			log.Println("write:", err)
+	// 			return
+	// 		}
+	// 	}
+	// }
 }
