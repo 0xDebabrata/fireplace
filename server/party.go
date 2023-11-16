@@ -50,7 +50,7 @@ func (p *Party) run() {
 	// watchparty will be terminated after this ticker ticks
 	ticker := time.NewTicker(5 * time.Second)
 	defer func() {
-		log.Printf("Party %s terminated", p.party.Id)
+		
 		done <- true  // close broadcastStatus goroutine
 		ticker.Stop() // close watchparty
 	}()
@@ -93,6 +93,7 @@ func (p *Party) run() {
 
 		case <-ticker.C:
 			// close the party after 24 hours
+			log.Printf("Party %s terminated", p.party.Id)
 			return
 		}
 
