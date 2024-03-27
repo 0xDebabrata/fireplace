@@ -28,27 +28,29 @@ const Files = ({ flag }) => {
     getFiles()
   }, [flag])
 
-   return (
-     <div className='py-5 bg-neutral-900'>
-       {loading ? <Loader loading={loading} />
-       : (videos && videos.length) ?
-           videos.map((video, index) => {
-             return <Card 
-               key={index} 
-               name={video.name} 
-               url={video.url} 
-               list={videos} 
-               setVideos={setVideos} 
-             />
-           }) 
+  return (
+    <div className='pb-10 bg-neutral-900 px-20'>
+      {loading ? <Loader loading={loading} />
+        : (videos && videos.length) ?
+            <ul role="list" className="grid grid-cols-1 gap-x-6 gap-y-8 lg:grid-cols-3 xl:gap-x-8">
+              {videos.map((video, index) => {
+                return <Card 
+                  key={index} 
+                  name={video.name} 
+                  url={video.url} 
+                  list={videos} 
+                  setVideos={setVideos} 
+                />
+              })}
+           </ul>
          :
          <>
            <p className="text-neutral-200 onboarding">Your library is empty.</p>
            <p className="text-neutral-200 text-center">Upload a video to create a watchparty.</p>
          </>
-       }
-     </div>
-   )
+      }
+    </div>
+  )
 }
 
 export default Files
