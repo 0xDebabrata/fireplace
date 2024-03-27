@@ -1,8 +1,13 @@
+import { Fragment } from 'react'
 import { useRouter } from 'next/navigation'
+import { Menu, Transition } from '@headlessui/react'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { EllipsisHorizontalIcon } from '@heroicons/react/24/solid'
 import toast from 'react-hot-toast'
 
-import styles from '../styles/Card.module.css'
+function classNames(...classes) {
+  return classes.filter(Boolean).join(' ')
+}
 
 const Card = ({ name, url, list, setVideos }) => {
   const router = useRouter()
@@ -69,29 +74,75 @@ const Card = ({ name, url, list, setVideos }) => {
   }
 
   return (
-    <div className={styles.container}>
-      <div className={styles.wrapperLeft}>
+    <li className="overflow-hidden rounded-xl border border-neutral-600">
+      <div className="flex items-center gap-x-4 border-b border-gray-900/5 bg-neutral-700 p-6">
         <svg 
           onClick={handlePlay}
+          className='fill-white hover:fill-neutral-400 duration-150'
           width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M9.3418 21.3711C9.71094 21.3711 10.0361 21.2393 10.4404 21.002L20.8203 14.999C21.5762 14.5596 21.8926 14.2168 21.8926 13.6631C21.8926 13.1094 21.5762 12.7754 20.8203 12.3271L10.4404 6.32422C10.0361 6.08691 9.71094 5.95508 9.3418 5.95508C8.62109 5.95508 8.11133 6.50879 8.11133 7.37891V19.9473C8.11133 20.8262 8.62109 21.3711 9.3418 21.3711Z" />
         </svg>
-        <h2 className={styles.name}>{name}</h2>
+        <div className="text-sm leading-6 text-gray-200">{name}</div>
+        <Menu as="div" className="relative ml-auto">
+          <Menu.Button className="-m-2.5 block p-2.5 text-gray-400 hover:text-gray-500">
+            <span className="sr-only">Open options</span>
+            <EllipsisHorizontalIcon className="h-5 w-5" aria-hidden="true" />
+          </Menu.Button>
+          <Transition
+            as={Fragment}
+            enter="transition ease-out duration-100"
+            enterFrom="transform opacity-0 scale-95"
+            enterTo="transform opacity-100 scale-100"
+            leave="transition ease-in duration-75"
+            leaveFrom="transform opacity-100 scale-100"
+            leaveTo="transform opacity-0 scale-95"
+          >
+            <Menu.Items className="absolute right-0 z-10 mt-0.5 w-32 origin-top-right rounded-md bg-neutral-800 border border-neutral-600 py-2 shadow-lg ring-1 ring-gray-900/5 focus:outline-none">
+              <Menu.Item>
+                {({ active }) => (
+                  <div
+                    onClick={() => handleDelete(name)}
+                    className={classNames(
+                      active ? 'bg-neutral-700' : '',
+                      'cursor-pointer block px-3 py-1 text-sm leading-6 text-neutral-400'
+                    )}
+                  >
+                    Delete<span className="sr-only">, {name}</span>
+                  </div>
+                )}
+              </Menu.Item>
+              {/*
+              <Menu.Item>
+                {({ active }) => (
+                  <a
+                    href="#"
+                    className={classNames(
+                      active ? 'bg-neutral-700' : '',
+                      'block px-3 py-1 text-sm leading-6 text-neutral-400'
+                    )}
+                  >
+                    Edit<span className="sr-only">, {name}</span>
+                  </a>
+                )}
+              </Menu.Item>
+                */}
+            </Menu.Items>
+          </Transition>
+        </Menu>
       </div>
-      <div className={styles.wrapperRight}>
-        <button 
-          onClick={() => createWatchparty(url)}
-          className="px-4 py-1 mr-6 text-sm text-neutral-300 border border-neutral-700 rounded-md hover:bg-yellow-600 hover:text-neutral-800 duration-150">
-          Start watchparty
-        </button>
-        <svg 
-          onClick={() => handleDelete(name)}
-          width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg"
-        >
-          <path d="M9.84277 22.4785H18.166C19.3701 22.4785 20.0732 21.8369 20.126 20.6416L20.6797 7.94141H21.8926C22.3408 7.94141 22.6836 7.58984 22.6836 7.15039C22.6836 6.71094 22.332 6.37695 21.8926 6.37695H18.0781V5.05859C18.0781 3.65234 17.1729 2.81738 15.6611 2.81738H12.3213C10.8096 2.81738 9.9043 3.65234 9.9043 5.05859V6.37695H6.10742C5.66797 6.37695 5.31641 6.71973 5.31641 7.15039C5.31641 7.59863 5.66797 7.94141 6.10742 7.94141H7.3291L7.8916 20.6416C7.93555 21.8369 8.63867 22.4785 9.84277 22.4785ZM11.7324 5.1377C11.7324 4.74219 12.0049 4.4873 12.4443 4.4873H15.5469C15.9863 4.4873 16.2588 4.74219 16.2588 5.1377V6.37695H11.7324V5.1377ZM11.1787 19.7803C10.8271 19.7803 10.5811 19.5518 10.5723 19.2002L10.3086 9.86621C10.2998 9.51465 10.5459 9.27734 10.915 9.27734C11.2666 9.27734 11.5127 9.50586 11.5215 9.85742L11.7852 19.1914C11.8027 19.543 11.5566 19.7803 11.1787 19.7803ZM14 19.7803C13.6309 19.7803 13.3848 19.5518 13.3848 19.2002V9.85742C13.3848 9.51465 13.6309 9.27734 14 9.27734C14.3691 9.27734 14.624 9.51465 14.624 9.85742V19.2002C14.624 19.5518 14.3691 19.7803 14 19.7803ZM16.8213 19.7891C16.4434 19.7891 16.1973 19.543 16.2148 19.2002L16.4785 9.85742C16.4873 9.50586 16.7334 9.27734 17.085 9.27734C17.4541 9.27734 17.7002 9.51465 17.6914 9.86621L17.4277 19.2002C17.4189 19.5518 17.1729 19.7891 16.8213 19.7891Z" />
-        </svg>
-      </div>
-    </div>
+      <dl className="-my-3 divide-y divide-neutral-600 px-6 py-4 text-sm leading-6">
+        <div className="flex justify-between items-center gap-x-4 py-3">
+          {/*<dt className="text-gray-500">Last invoice</dt>*/}
+          <dd className="text-gray-700">
+            <button 
+              onClick={() => createWatchparty(url)}
+              className="px-4 py-1 text-sm text-neutral-400 border border-neutral-600 rounded-md hover:bg-yellow-600 hover:text-neutral-800 duration-150">
+              Start watchparty
+            </button>
+          </dd>
+        </div>
+      </dl>
+    </li>
   )
 }
 
