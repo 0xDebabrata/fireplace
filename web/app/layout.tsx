@@ -1,4 +1,5 @@
 import '../styles/globals.css'
+import { Analytics } from "@vercel/analytics/react"
 
 export const metadata = {
   title: 'Fireplace: Watch movies with friends',
@@ -13,6 +14,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className='bg-neutral-900'>{children}</body>
+      <Analytics />
     </html>
   )
 }
