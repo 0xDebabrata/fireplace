@@ -52,8 +52,6 @@ const Card = ({ name, url, list, setVideos }) => {
   };
 
   const updateDb = async (userId, subtitleFilename) => {
-    console.log("Will update db", url);
-
     const { error } = await supabase
       .from("fireplace-videos")
       .update({
@@ -65,7 +63,7 @@ const Card = ({ name, url, list, setVideos }) => {
       console.error(error);
       throw error;
     }
-    console.log("Db updated");
+    console.log("Sutitles uploaded successfully");
   };
 
   const handleAddSubtitleClick = async () => {
@@ -80,8 +78,6 @@ const Card = ({ name, url, list, setVideos }) => {
 
     // use video file's name instead of subtitle file's name
     const subtitleFilename = name.split(".").slice(0, -1).join(".") + ".vtt";
-
-    console.log("Subtitle file name:", subtitleFilename);
 
     const reqObject = {
       method: "POST",
@@ -115,7 +111,6 @@ const Card = ({ name, url, list, setVideos }) => {
       xhr.open("PUT", url);
       xhr.setRequestHeader("content-type", "text/vtt");
       xhr.send(file);
-      console.log("Sutitles uploaded successfully");
     });
   };
 
@@ -211,7 +206,6 @@ const Card = ({ name, url, list, setVideos }) => {
                   </>
                 )}
               </Menu.Item>
-
               {/*
               <Menu.Item>
                 {({ active }) => (
