@@ -113,6 +113,7 @@ const Card = ({ name, url, list, setVideos }) => {
       };
 
       xhr.open("PUT", url);
+      xhr.setRequestHeader("content-type", "text/vtt");
       xhr.send(file);
       console.log("Sutitles uploaded successfully");
     });
