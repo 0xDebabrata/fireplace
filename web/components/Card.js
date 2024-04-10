@@ -51,6 +51,23 @@ const Card = ({ name, url, list, setVideos }) => {
     });
   };
 
+  const updateDb = async (userId, subtitleFilename) => {
+    console.log("Will update db", url);
+
+    const { error } = await supabase
+      .from("fireplace-videos")
+      .update({
+        subtitle_url: `https://d3v6emoc2mddy2.cloudfront.net/${userId}/${subtitleFilename}`,
+      })
+      .or(`and(url.eq.${url}, user_id.eq.${userId})`);
+
+    if (error) {
+      console.error(error);
+      throw error;
+    }
+    console.log("Db updated");
+  };
+
   const handleAddSubtitleClick = async () => {
     fileInputRef.current.click();
   };
@@ -64,7 +81,7 @@ const Card = ({ name, url, list, setVideos }) => {
     // use video file's name instead of subtitle file's name
     const subtitleFilename = name.split(".").slice(0, -1).join(".") + ".vtt";
 
-    // console.log("Subtitle file name:", subtitleFilename);
+    console.log("Subtitle file name:", subtitleFilename);
 
     const reqObject = {
       method: "POST",
@@ -85,8 +102,9 @@ const Card = ({ name, url, list, setVideos }) => {
       const xhr = new XMLHttpRequest();
 
       xhr.onreadystatechange = async () => {
-        if (xhr.status === 4) {
+        if (xhr.readyState === 4) {
           if (xhr.status === 200) {
+            await updateDb(user.id, subtitleFilename);
             resolve(xhr);
           } else {
             reject(xhr);
@@ -96,7 +114,7 @@ const Card = ({ name, url, list, setVideos }) => {
 
       xhr.open("PUT", url);
       xhr.send(file);
-      // console.log("Sutitles uploaded successfully");
+      console.log("Sutitles uploaded successfully");
     });
   };
 
