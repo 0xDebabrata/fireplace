@@ -1,85 +1,144 @@
-import { Fragment } from 'react'
-import { useRouter } from 'next/navigation'
-import { Menu, Transition } from '@headlessui/react'
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
-import { EllipsisHorizontalIcon } from '@heroicons/react/24/solid'
-import toast from 'react-hot-toast'
+import { Fragment, useRef, version } from "react";
+import { useRouter } from "next/navigation";
+import { Menu, Transition } from "@headlessui/react";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { EllipsisHorizontalIcon } from "@heroicons/react/24/solid";
+import toast from "react-hot-toast";
 
 function classNames(...classes) {
-  return classes.filter(Boolean).join(' ')
+  return classes.filter(Boolean).join(" ");
 }
 
 const Card = ({ name, url, list, setVideos }) => {
-  const router = useRouter()
-  const supabase = createClientComponentClient()
+  const router = useRouter();
+  const supabase = createClientComponentClient();
+  const fileInputRef = useRef(null);
 
   const handleDelete = async (name) => {
-    const { data: { user } } = await supabase.auth.getUser()
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
 
     const reqObject = {
       method: "POST",
       body: JSON.stringify({
-        key: `${user.id}/${name}`
-      })
-    }
+        key: `${user.id}/${name}`,
+      }),
+    };
 
     // const promise = deleteFile(id)
-    const promise = new Promise( async (resolve, reject) => {
-      const { success, err } = await fetch("/api/deleteVideo", reqObject)
+    const promise = new Promise(async (resolve, reject) => {
+      const { success, err } = await fetch("/api/deleteVideo", reqObject);
       const { data, error } = await supabase
         .from("fireplace-videos")
         .delete()
-        .eq("name", name)
+        .eq("name", name);
 
       if (err || error) {
-        reject()
-        throw new Error(err)
+        reject();
+        throw new Error(err);
       } else {
-        const updatedList = list.filter(video => video.name != name)
-        setVideos(updatedList)
-        resolve()
+        const updatedList = list.filter((video) => video.name != name);
+        setVideos(updatedList);
+        resolve();
       }
-    })
+    });
 
     toast.promise(promise, {
       success: "Video deleted successfully",
       loading: "Deleting video",
-      error: "Could not delete video"
-    })
-  }
+      error: "Could not delete video",
+    });
+  };
+
+  const handleAddSubtitleClick = async () => {
+    fileInputRef.current.click();
+  };
+
+  const handleFileSelect = async () => {
+    const file = fileInputRef.current.files[0];
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    // use video file's name instead of subtitle file's name
+    const subtitleFilename = name.split(".").slice(0, -1).join(".") + ".vtt";
+
+    // console.log("Subtitle file name:", subtitleFilename);
+
+    const reqObject = {
+      method: "POST",
+      body: JSON.stringify({
+        userId: user.id,
+        fileName: subtitleFilename,
+        fileType: ".vtt",
+      }),
+    };
+
+    const promise = new Promise(async (resolve, reject) => {
+      const url = await fetch("/api/preSignedURL", reqObject)
+        .then((resp) => resp.json())
+        .then((url) => {
+          return url.url;
+        });
+
+      const xhr = new XMLHttpRequest();
+
+      xhr.onreadystatechange = async () => {
+        if (xhr.status === 4) {
+          if (xhr.status === 200) {
+            resolve(xhr);
+          } else {
+            reject(xhr);
+          }
+        }
+      };
+
+      xhr.open("PUT", url);
+      xhr.send(file);
+      // console.log("Sutitles uploaded successfully");
+    });
+  };
 
   const handlePlay = async () => {
-    window.open(url, '_blank')
-  }
+    window.open(url, "_blank");
+  };
 
   const createWatchparty = async (url) => {
-    const { data: { user } } = await supabase.auth.getUser()
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
 
     const info = {
       video_url: url,
       creator_id: user.id,
-      test: process.env.NEXT_PUBLIC_STAGE === 'dev' ? true : false,
-    }
+      test: process.env.NEXT_PUBLIC_STAGE === "dev" ? true : false,
+    };
 
     const { data, err } = await supabase
       .from("watchparties")
       .insert([info])
-      .select()
+      .select();
 
     if (err) {
-      console.error(err)
+      console.error(err);
     }
 
-    router.push(`/${user.id}/${data[0].id}/create`)
-  }
+    router.push(`/${user.id}/${data[0].id}/create`);
+  };
 
   return (
     <li className="overflow-hidden rounded-xl border border-neutral-600">
       <div className="flex items-center gap-x-4 border-b border-gray-900/5 bg-neutral-700 p-6">
-        <svg 
+        <svg
           onClick={handlePlay}
-          className='fill-white hover:fill-neutral-400 duration-150'
-          width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+          className="fill-white hover:fill-neutral-400 duration-150"
+          width="28"
+          height="28"
+          viewBox="0 0 28 28"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
           <path d="M9.3418 21.3711C9.71094 21.3711 10.0361 21.2393 10.4404 21.002L20.8203 14.999C21.5762 14.5596 21.8926 14.2168 21.8926 13.6631C21.8926 13.1094 21.5762 12.7754 20.8203 12.3271L10.4404 6.32422C10.0361 6.08691 9.71094 5.95508 9.3418 5.95508C8.62109 5.95508 8.11133 6.50879 8.11133 7.37891V19.9473C8.11133 20.8262 8.62109 21.3711 9.3418 21.3711Z" />
         </svg>
         <div className="text-sm leading-6 text-gray-200">{name}</div>
@@ -103,14 +162,37 @@ const Card = ({ name, url, list, setVideos }) => {
                   <div
                     onClick={() => handleDelete(name)}
                     className={classNames(
-                      active ? 'bg-neutral-700' : '',
-                      'cursor-pointer block px-3 py-1 text-sm leading-6 text-neutral-400'
+                      active ? "bg-neutral-700" : "",
+                      "cursor-pointer block px-3 py-1 text-sm leading-6 text-neutral-400"
                     )}
                   >
                     Delete<span className="sr-only">, {name}</span>
                   </div>
                 )}
               </Menu.Item>
+              <Menu.Item>
+                {({ active }) => (
+                  <>
+                    <div
+                      onClick={handleAddSubtitleClick}
+                      className={classNames(
+                        active ? "bg-neutral-700" : "",
+                        "cursor-pointer block px-3 py-1 text-sm leading-6 text-neutral-400"
+                      )}
+                    >
+                      Add Subtitles<span className="sr-only">, {name}</span>
+                    </div>
+                    <input
+                      onChange={handleFileSelect}
+                      type="file"
+                      accept=".vtt"
+                      hidden
+                      ref={fileInputRef}
+                    />
+                  </>
+                )}
+              </Menu.Item>
+
               {/*
               <Menu.Item>
                 {({ active }) => (
@@ -134,16 +216,17 @@ const Card = ({ name, url, list, setVideos }) => {
         <div className="flex justify-between items-center gap-x-4 py-3">
           {/*<dt className="text-gray-500">Last invoice</dt>*/}
           <dd className="text-gray-700">
-            <button 
+            <button
               onClick={() => createWatchparty(url)}
-              className="px-4 py-1 text-sm text-neutral-400 border border-neutral-600 rounded-md hover:bg-yellow-600 hover:text-neutral-800 duration-150">
+              className="px-4 py-1 text-sm text-neutral-400 border border-neutral-600 rounded-md hover:bg-yellow-600 hover:text-neutral-800 duration-150"
+            >
               Start watchparty
             </button>
           </dd>
         </div>
       </dl>
     </li>
-  )
-}
+  );
+};
 
-export default Card
+export default Card;
