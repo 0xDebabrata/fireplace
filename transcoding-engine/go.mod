@@ -8,5 +8,3 @@ require (
 	github.com/u2takey/go-utils v0.3.1 // indirect
 	gopkg.in/vansante/go-ffprobe.v2 v2.1.1 // indirect
 )
-
-require github.com/u2takey/ffmpeg-go v0.5.0
