@@ -31,6 +31,17 @@ const Chat = ({ session, ws, partyId, messageList, setMessageList }) => {
     setMessage("")
   }
 
+  /*
+  useEffect(() => {
+    if (!ws.current) return
+
+    ws.current.onerror = (data) => {
+      console.log(data)
+    }
+    console.log("Set up onerror callback")
+  }, [ws])
+  */
+
   // Auto scroll to bottom of chat whenever new message is added
   useEffect(() => {
     const chat = document.getElementById("chat")

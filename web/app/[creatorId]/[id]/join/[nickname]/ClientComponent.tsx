@@ -37,6 +37,9 @@ export default function ClientComponent({ params, session }: ClientProps) {
   const [playheadStart, setPlayheadStart] = useState(0);
   const [denied, setDenied] = useState(true);
   const [messageList, setMessageList] = useState<any[]>([]);
+  // Track web socket connection status.
+  // Optimistically set to true initially.
+  const [wsConnected, setWsConnected] = useState(true);
 
   useEffect(() => {
     const clientId = session.user.id;
@@ -64,7 +67,14 @@ export default function ClientComponent({ params, session }: ClientProps) {
         partyId: id,
       };
       ws.current?.send(JSON.stringify(payload));
+      setWsConnected(true)
     };
+
+    ws.current.onerror = (error: WebSocketEventMap["error"]) => {
+      console.error(error)
+      setWsConnected(false)
+      // Try to re-establish connection
+    }
 
     ws.current.onmessage = (message) => {
       const response = JSON.parse(message.data);
@@ -196,6 +206,7 @@ export default function ClientComponent({ params, session }: ClientProps) {
               partyId={partyId}
               messageList={messageList}
               setMessageList={setMessageList}
+              wsConnected={wsConnected}
             />
           </div>
         )}
