@@ -40,19 +40,27 @@ export default function ClientComponent({ params, session }: ClientProps) {
   // Track web socket connection status.
   // Optimistically set to true initially.
   const [wsConnected, setWsConnected] = useState(true);
+  // Time to wait for before re-establishing connection
+  const [waitTime, setWaitTime] = useState(1);  // 1 sec
 
-  useEffect(() => {
+  const sleep = async (time: number) => {
+    return new Promise((res) => {
+      setTimeout(res, time)
+    })
+  }
+  const restablishConnection = async (wait: number) => {
+    if (wsConnected) return;
+
+    console.log("before")
+    await sleep(wait)
+    console.log("after")
+    setWaitTime(2 * waitTime)
+    setupWsConnection()
+  }
+
+  const setupWsConnection = () => {
+    const { id, nickname } = params
     const clientId = session.user.id;
-    let creator = false
-
-    const { creatorId, id, nickname } = params;
-    setPartyId(id);
-
-    if (creatorId === session.user.id) {
-      creator = true
-      setCreator(true);
-      setCreatorUserId(creatorId);
-    }
 
     ws.current = new WebSocket(
       `${process.env.NEXT_PUBLIC_WEBSOCKET_URL}?userId=${clientId}&partyId=${id}`
@@ -67,13 +75,21 @@ export default function ClientComponent({ params, session }: ClientProps) {
         partyId: id,
       };
       ws.current?.send(JSON.stringify(payload));
+
       setWsConnected(true)
+      setWaitTime(1)
     };
 
     ws.current.onerror = (error: WebSocketEventMap["error"]) => {
-      console.error(error)
-      setWsConnected(false)
-      // Try to re-establish connection
+      console.error("onerror", error)
+    }
+    ws.current.onclose = (event: WebSocketEventMap["close"]) => {
+      console.log("onclose", event)
+      if (!event.wasClean) {
+        setWsConnected(false)
+        // Try to re-establish connection
+        restablishConnection(waitTime)
+      }
     }
 
     ws.current.onmessage = (message) => {
@@ -161,6 +177,21 @@ export default function ClientComponent({ params, session }: ClientProps) {
         });
       }
     }
+  }
+
+  useEffect(() => {
+    let creator = false
+
+    const { creatorId, id } = params;
+    setPartyId(id);
+
+    if (creatorId === session.user.id) {
+      creator = true
+      setCreator(true);
+      setCreatorUserId(creatorId);
+    }
+
+    setupWsConnection()
 
     return () => {
       if (ws.current) {
