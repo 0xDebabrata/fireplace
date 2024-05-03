@@ -1,17 +1,17 @@
-'use client'
+"use client";
 
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react";
 //import { useRouter } from 'next/navigation'
-import toast, { Toaster } from "react-hot-toast"
+import toast, { Toaster } from "react-hot-toast";
 import WebSocket from "isomorphic-ws";
-import { Session } from "@supabase/supabase-js"
+import { Session } from "@supabase/supabase-js";
 
 import VideoPlayer from "../../../../../components/VideoPlayer";
 import Loader from "../../../../../components/Loading";
 import Sidebar from "../../../../../components/sidebar/Sidebar";
 import { updatePlayhead, keepAlive } from "../../../../../functions/watchparty";
 
-import styles from "../../../../../styles/Watch.module.css"
+import styles from "../../../../../styles/Watch.module.css";
 
 interface ClientProps {
   params: {
@@ -41,26 +41,28 @@ export default function ClientComponent({ params, session }: ClientProps) {
   // Optimistically set to true initially.
   const [wsConnected, setWsConnected] = useState(true);
   // Time to wait for before re-establishing connection
-  const [waitTime, setWaitTime] = useState(1);  // 1 sec
+  const [waitTime, setWaitTime] = useState(1); // 1 sec
+  const [showSidebar, setShowSidebar] = useState(true);
+  const [unreadIndicator, setUnreadIndicator] = useState(false);
 
   const sleep = async (time: number) => {
     return new Promise((res) => {
-      setTimeout(res, time)
-    })
-  }
+      setTimeout(res, time);
+    });
+  };
   const reconnect = async (wait: number) => {
-    console.log("Reconnecting")
+    console.log("Reconnecting");
     if (wsConnected) return;
 
-    console.log("before")
-    await sleep(wait)
-    console.log("after")
-    setWaitTime(2 * waitTime)
-    setupWsConnection()
-  }
+    console.log("before");
+    await sleep(wait);
+    console.log("after");
+    setWaitTime(2 * waitTime);
+    setupWsConnection();
+  };
 
   const setupWsConnection = () => {
-    const { id, nickname } = params
+    const { id, nickname } = params;
     const clientId = session.user.id;
 
     ws.current = new WebSocket(
@@ -77,25 +79,25 @@ export default function ClientComponent({ params, session }: ClientProps) {
       };
       ws.current?.send(JSON.stringify(payload));
 
-      setWsConnected(true)
-      setWaitTime(1)
+      setWsConnected(true);
+      setWaitTime(1);
     };
 
     ws.current.onerror = (error: WebSocketEventMap["error"]) => {
-      console.error("onerror", error)
-    }
+      console.error("onerror", error);
+    };
     ws.current.onclose = (event: WebSocketEventMap["close"]) => {
-      console.log("onclose", event)
+      console.log("onclose", event);
       if (!event.wasClean) {
-        setWsConnected(false)
+        setWsConnected(false);
         // Try to re-establish connection
-        reconnect(waitTime)
+        reconnect(waitTime);
       }
-    }
+    };
 
     ws.current.onmessage = (message) => {
       const response = JSON.parse(message.data);
-      const vid = document.getElementById("video") as HTMLVideoElement
+      const vid = document.getElementById("video") as HTMLVideoElement;
 
       /*
       // Max participant limit reached
@@ -114,7 +116,7 @@ export default function ClientComponent({ params, session }: ClientProps) {
         // Start playback if owner's video is playing
         // This helps auto start the client's video if they join mid-stream.
         if (response.party.isPlaying) {
-          setAutoplay(true)
+          setAutoplay(true);
         }
 
         if (creator) {
@@ -205,22 +207,28 @@ export default function ClientComponent({ params, session }: ClientProps) {
           ];
         });
       }
-    }
-  }
+    };
+  };
 
   useEffect(() => {
-    let creator = false
+    if (!showSidebar) {
+      setUnreadIndicator(true);
+    }
+  }, [messageList]);
+
+  useEffect(() => {
+    let creator = false;
 
     const { creatorId, id } = params;
     setPartyId(id);
 
     if (creatorId === session.user.id) {
-      creator = true
+      creator = true;
       setCreator(true);
       setCreatorUserId(creatorId);
     }
 
-    setupWsConnection()
+    setupWsConnection();
 
     return () => {
       if (ws.current) {
@@ -246,6 +254,10 @@ export default function ClientComponent({ params, session }: ClientProps) {
                 playheadStart={playheadStart}
                 screenRef={screenRef}
                 autoplay={autoplay}
+                unreadIndicator={unreadIndicator}
+                setUnreadIndicator={setUnreadIndicator}
+                showSidebar={showSidebar}
+                setShowSidebar={setShowSidebar}
               />
             ) : (
               <VideoPlayer
@@ -253,21 +265,29 @@ export default function ClientComponent({ params, session }: ClientProps) {
                 controls={false}
                 playheadStart={playheadStart}
                 screenRef={screenRef}
-                partyId=''
-                creatorId=''
+                partyId=""
+                creatorId=""
                 ws={null}
                 autoplay={autoplay}
+                unreadIndicator={unreadIndicator}
+                setUnreadIndicator={setUnreadIndicator}
+                showSidebar={showSidebar}
+                setShowSidebar={setShowSidebar}
               />
             )}
 
-            <Sidebar
-              session={session}
-              ws={ws}
-              partyId={partyId}
-              messageList={messageList}
-              setMessageList={setMessageList}
-              wsConnected={wsConnected}
-            />
+            {showSidebar && (
+              <Sidebar
+                session={session}
+                ws={ws}
+                partyId={partyId}
+                messageList={messageList}
+                setMessageList={setMessageList}
+                wsConnected={wsConnected}
+                showSidebar={showSidebar}
+                setShowSidebar={setShowSidebar}
+              />
+            )}
           </div>
         )}
       </div>
@@ -275,11 +295,10 @@ export default function ClientComponent({ params, session }: ClientProps) {
       <Toaster
         toastOptions={{
           style: {
-          minWidth: "300px"
-          }
-        }} 
+            minWidth: "300px",
+          },
+        }}
       />
     </>
-  )
+  );
 }
-
