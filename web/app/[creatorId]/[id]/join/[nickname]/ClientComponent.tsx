@@ -36,12 +36,7 @@ export default function ClientComponent({ params, session }: ClientProps) {
   const [loading, setLoading] = useState(true);
   const [playheadStart, setPlayheadStart] = useState(0);
   const [denied, setDenied] = useState(true);
-  const [messageList, setMessageList] = useState<any[]>([
-            {
-              type: "event",
-              message: "Video paused",
-            },
-  ]);
+  const [messageList, setMessageList] = useState<any[]>([]);
   // Track web socket connection status.
   // Optimistically set to true initially.
   const [wsConnected, setWsConnected] = useState(true);
