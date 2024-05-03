@@ -43,15 +43,9 @@ const Chat = ({ session, ws, partyId, messageList, setMessageList }) => {
       <div id="chat"
         className={styles.chat}
       >
-        {messageList.map((messageObj, index) => {
-          console.log(messageObj)
-          if (messageObj.type === "event") {
-            return <hr key={index} className="w-full border border-white" />
-          }
-          return (
-            <ChatMessage messageObj={messageObj} key={index} />
-          )
-        })}
+        {messageList.map((messageObj, index) => (
+          <ChatMessage messageObj={messageObj} key={index} />
+        ))}
       </div>
       <form className={styles.inputWrapper} onSubmit={addMessage}>
         <input 

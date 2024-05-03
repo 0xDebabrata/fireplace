@@ -36,7 +36,12 @@ export default function ClientComponent({ params, session }: ClientProps) {
   const [loading, setLoading] = useState(true);
   const [playheadStart, setPlayheadStart] = useState(0);
   const [denied, setDenied] = useState(true);
-  const [messageList, setMessageList] = useState<any[]>([]);
+  const [messageList, setMessageList] = useState<any[]>([
+            {
+              type: "event",
+              message: "Video paused",
+            },
+  ]);
   // Track web socket connection status.
   // Optimistically set to true initially.
   const [wsConnected, setWsConnected] = useState(true);
@@ -137,6 +142,15 @@ export default function ClientComponent({ params, session }: ClientProps) {
             color: "#fff",
           },
         });
+        setMessageList((oldArr) => {
+          return [
+            ...oldArr,
+            {
+              type: "event",
+              message: `${response.nickname} joined`,
+            },
+          ];
+        });
       }
 
       // A user left the watchparty
@@ -148,6 +162,15 @@ export default function ClientComponent({ params, session }: ClientProps) {
             background: "#333",
             color: "#fff",
           },
+        });
+        setMessageList((oldArr) => {
+          return [
+            ...oldArr,
+            {
+              type: "event",
+              message: `${response.nickname} left`,
+            },
+          ];
         });
       }
 
