@@ -2,7 +2,11 @@ import styles from "../styles/VideoPlayer.module.css";
 
 import { useRef, useEffect, useState } from "react";
 import Image from "next/image";
-import { PlayIcon, PauseIcon } from "@heroicons/react/24/solid";
+import {
+  PlayIcon,
+  PauseIcon,
+  ChatBubbleOvalLeftIcon,
+} from "@heroicons/react/24/solid";
 
 import {
   handleMouseMovement,
@@ -20,6 +24,7 @@ import {
   handleSeeked,
   loadStartPosition,
 } from "../functions/watchparty";
+import { imageConfigDefault } from "next/dist/shared/lib/image-config";
 
 const VideoPlayer = ({
   autoplay,
@@ -30,6 +35,10 @@ const VideoPlayer = ({
   ws,
   playheadStart,
   screenRef,
+  unreadIndicator,
+  setUnreadIndicator,
+  showSidebar,
+  setShowSidebar,
 }) => {
   const videoRef = useRef();
   const progressRef = useRef();
@@ -44,6 +53,7 @@ const VideoPlayer = ({
   const [audio, setAudio] = useState(true);
   const [isPaused, setIsPaused] = useState(true);
   const [subtitleURL, setSubtitleURL] = useState("");
+  const [showChat, setShowChat] = useState(true);
 
   const getSubtitleSrc = () => {
     const subsArr = src.split(".");
@@ -206,6 +216,33 @@ const VideoPlayer = ({
             height={24}
           />
         </div>
+        <button
+          onClick={() => {
+            if (!showSidebar) {
+              setUnreadIndicator(false);
+              setShowSidebar(true);
+            } else {
+              setShowSidebar(false);
+            }
+          }}
+          className="absolute top-4 right-4"
+        >
+          {!showSidebar ? (
+            unreadIndicator ? (
+              <ChatBubbleOvalLeftIcon
+                className="text-orange-400"
+                width={30}
+              ></ChatBubbleOvalLeftIcon>
+            ) : (
+              <ChatBubbleOvalLeftIcon
+                className="text-neutral-700"
+                width={30}
+              ></ChatBubbleOvalLeftIcon>
+            )
+          ) : (
+            <></>
+          )}
+        </button>
       </div>
     </div>
   );
