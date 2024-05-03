@@ -41,6 +41,7 @@ func initClient(id string, conn *websocket.Conn, party *Party) *Client {
 
 func (c *Client) readPump() {
     defer func() {
+        log.Println("Read pump closed.")
         c.party.leave <- c
         c.conn.Close()
     }()
@@ -87,6 +88,7 @@ func (c *Client) readPump() {
 func (c *Client) writePump() {
     ticker := time.NewTicker(pingPeriod)
     defer func() {
+        log.Println("Write pump closed.")
         ticker.Stop()
         c.conn.Close()
     }()
