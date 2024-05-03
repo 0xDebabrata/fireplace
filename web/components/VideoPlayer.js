@@ -216,34 +216,34 @@ const VideoPlayer = ({
             height={24}
           />
         </div>
-        <button
-          onClick={() => {
-            if (!showSidebar) {
-              setUnreadIndicator(false);
-              setShowSidebar(true);
-            } else {
-              setShowSidebar(false);
-            }
-          }}
-          className="absolute top-4 right-4"
-        >
-          {!showSidebar ? (
-            unreadIndicator ? (
-              <ChatBubbleOvalLeftIcon
-                className="text-orange-400"
-                width={30}
-              ></ChatBubbleOvalLeftIcon>
-            ) : (
-              <ChatBubbleOvalLeftIcon
-                className="text-neutral-700"
-                width={30}
-              ></ChatBubbleOvalLeftIcon>
-            )
-          ) : (
-            <></>
-          )}
-        </button>
       </div>
+      <button
+        onClick={() => {
+          if (!showSidebar) {
+            setUnreadIndicator(false);
+            setShowSidebar(true);
+          } else {
+            setShowSidebar(false);
+          }
+        }}
+        className="absolute top-4 right-4"
+      >
+        {!showSidebar ? (
+          unreadIndicator ? (
+            <ChatBubbleOvalLeftIcon
+              className="text-orange-400"
+              width={30}
+            ></ChatBubbleOvalLeftIcon>
+          ) : (
+            <ChatBubbleOvalLeftIcon
+              className="text-neutral-700"
+              width={30}
+            ></ChatBubbleOvalLeftIcon>
+          )
+        ) : (
+          <></>
+        )}
+      </button>
     </div>
   );
 };
