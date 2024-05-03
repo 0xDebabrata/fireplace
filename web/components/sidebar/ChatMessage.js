@@ -1,6 +1,7 @@
 import styles from "../../styles/Chat.module.css"
 
 const ChatMessage = ({ messageObj }) => {
+  console.log(messageObj)
   return (
     <div 
       className={styles.wrapper}

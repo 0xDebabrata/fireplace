@@ -152,16 +152,43 @@ export default function ClientComponent({ params, session }: ClientProps) {
         if (!creator) {
           vid.play();
         }
+        setMessageList((oldArr) => {
+          return [
+            ...oldArr,
+            {
+              type: "event",
+              message: "Video playing",
+            },
+          ];
+        });
       }
 
       if (response.method === "pause") {
         if (!creator) {
           vid.pause();
         }
+        setMessageList((oldArr) => {
+          return [
+            ...oldArr,
+            {
+              type: "event",
+              message: "Video paused",
+            },
+          ];
+        });
       }
 
       if (response.method === "seeked") {
         vid.currentTime = response.playhead;
+        setMessageList((oldArr) => {
+          return [
+            ...oldArr,
+            {
+              type: "event",
+              message: "Video seeked",
+            },
+          ];
+        });
       }
 
       if (response.method === "chat") {
@@ -169,6 +196,7 @@ export default function ClientComponent({ params, session }: ClientProps) {
           return [
             ...oldArr,
             {
+              type: "message",
               message: response.message,
               sent: false,
               nickname: response.nickname,
