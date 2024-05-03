@@ -48,7 +48,8 @@ export default function ClientComponent({ params, session }: ClientProps) {
       setTimeout(res, time)
     })
   }
-  const restablishConnection = async (wait: number) => {
+  const reconnect = async (wait: number) => {
+    console.log("Reconnecting")
     if (wsConnected) return;
 
     console.log("before")
@@ -88,7 +89,7 @@ export default function ClientComponent({ params, session }: ClientProps) {
       if (!event.wasClean) {
         setWsConnected(false)
         // Try to re-establish connection
-        restablishConnection(waitTime)
+        reconnect(waitTime)
       }
     }
 
