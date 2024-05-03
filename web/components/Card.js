@@ -1,4 +1,4 @@
-import { Fragment, useRef, version } from "react";
+import { Fragment, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { Menu, Transition } from "@headlessui/react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
@@ -61,9 +61,8 @@ const Card = ({ name, url, list, setVideos }) => {
 
     if (error) {
       console.error(error);
-      throw error;
     }
-    console.log("Sutitles uploaded successfully");
+    return { error }
   };
 
   const handleAddSubtitleClick = async () => {
@@ -100,10 +99,13 @@ const Card = ({ name, url, list, setVideos }) => {
       xhr.onreadystatechange = async () => {
         if (xhr.readyState === 4) {
           if (xhr.status === 200) {
-            await updateDb(user.id, subtitleFilename);
-            resolve(xhr);
+            const { error } = await updateDb(user.id, subtitleFilename);
+            if (error) {
+              reject(error.message)
+            }
+            resolve();
           } else {
-            reject(xhr);
+            reject("Could not upload subtitle");
           }
         }
       };
@@ -112,6 +114,12 @@ const Card = ({ name, url, list, setVideos }) => {
       xhr.setRequestHeader("content-type", "text/vtt");
       xhr.send(file);
     });
+
+    toast.promise(promise, {
+      loading: "Uploading subtitle",
+      success: "Subtitles uploaded",
+      error: (message) => message,
+    })
   };
 
   const handlePlay = async () => {
@@ -144,18 +152,24 @@ const Card = ({ name, url, list, setVideos }) => {
   return (
     <li className="overflow-hidden rounded-xl border border-neutral-600">
       <div className="flex items-center gap-x-4 border-b border-gray-900/5 bg-neutral-700 p-6">
-        <svg
-          onClick={handlePlay}
-          className="fill-white hover:fill-neutral-400 duration-150"
-          width="28"
-          height="28"
-          viewBox="0 0 28 28"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path d="M9.3418 21.3711C9.71094 21.3711 10.0361 21.2393 10.4404 21.002L20.8203 14.999C21.5762 14.5596 21.8926 14.2168 21.8926 13.6631C21.8926 13.1094 21.5762 12.7754 20.8203 12.3271L10.4404 6.32422C10.0361 6.08691 9.71094 5.95508 9.3418 5.95508C8.62109 5.95508 8.11133 6.50879 8.11133 7.37891V19.9473C8.11133 20.8262 8.62109 21.3711 9.3418 21.3711Z" />
-        </svg>
-        <div className="text-sm leading-6 text-gray-200">{name}</div>
+        <div>
+          <svg
+            onClick={handlePlay}
+            className="fill-white hover:fill-neutral-400 duration-150"
+            width="28"
+            height="28"
+            viewBox="0 0 28 28"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path d="M9.3418 21.3711C9.71094 21.3711 10.0361 21.2393 10.4404 21.002L20.8203 14.999C21.5762 14.5596 21.8926 14.2168 21.8926 13.6631C21.8926 13.1094 21.5762 12.7754 20.8203 12.3271L10.4404 6.32422C10.0361 6.08691 9.71094 5.95508 9.3418 5.95508C8.62109 5.95508 8.11133 6.50879 8.11133 7.37891V19.9473C8.11133 20.8262 8.62109 21.3711 9.3418 21.3711Z" />
+          </svg>
+        </div>
+
+        <div className="text-sm leading-6 text-gray-200 truncate">
+          {name}
+        </div>
+
         <Menu as="div" className="relative ml-auto">
           <Menu.Button className="-m-2.5 block p-2.5 text-gray-400 hover:text-gray-500">
             <span className="sr-only">Open options</span>
@@ -170,7 +184,23 @@ const Card = ({ name, url, list, setVideos }) => {
             leaveFrom="transform opacity-100 scale-100"
             leaveTo="transform opacity-0 scale-95"
           >
-            <Menu.Items className="absolute right-0 z-10 mt-0.5 w-32 origin-top-right rounded-md bg-neutral-800 border border-neutral-600 py-2 shadow-lg ring-1 ring-gray-900/5 focus:outline-none">
+            <Menu.Items className="absolute right-0 z-10 mt-0.5 w-32 origin-top-right rounded-md bg-neutral-800 border border-neutral-600 py-1 shadow-lg ring-1 ring-gray-900/5 focus:outline-none">
+              <Menu.Item>
+                {({ active }) => (
+                  <div
+                    onClick={handleAddSubtitleClick}
+                    className={classNames(
+                      active ? "bg-neutral-700" : "",
+                      "cursor-pointer block px-3 py-1 text-sm leading-6 text-neutral-400"
+                    )}
+                  >
+                    <div
+                    >
+                      Add subtitles<span className="sr-only">, {name}</span>
+                    </div>
+                  </div>
+                )}
+              </Menu.Item>
               <Menu.Item>
                 {({ active }) => (
                   <div
@@ -184,46 +214,17 @@ const Card = ({ name, url, list, setVideos }) => {
                   </div>
                 )}
               </Menu.Item>
-              <Menu.Item>
-                {({ active }) => (
-                  <>
-                    <div
-                      onClick={handleAddSubtitleClick}
-                      className={classNames(
-                        active ? "bg-neutral-700" : "",
-                        "cursor-pointer block px-3 py-1 text-sm leading-6 text-neutral-400"
-                      )}
-                    >
-                      Add Subtitles<span className="sr-only">, {name}</span>
-                    </div>
-                    <input
-                      onChange={handleFileSelect}
-                      type="file"
-                      accept=".vtt"
-                      hidden
-                      ref={fileInputRef}
-                    />
-                  </>
-                )}
-              </Menu.Item>
-              {/*
-              <Menu.Item>
-                {({ active }) => (
-                  <a
-                    href="#"
-                    className={classNames(
-                      active ? 'bg-neutral-700' : '',
-                      'block px-3 py-1 text-sm leading-6 text-neutral-400'
-                    )}
-                  >
-                    Edit<span className="sr-only">, {name}</span>
-                  </a>
-                )}
-              </Menu.Item>
-                */}
             </Menu.Items>
           </Transition>
         </Menu>
+
+        <input
+          onChange={handleFileSelect}
+          type="file"
+          accept=".vtt"
+          hidden
+          ref={fileInputRef}
+        />
       </div>
       <dl className="-my-3 divide-y divide-neutral-600 px-6 py-4 text-sm leading-6">
         <div className="flex justify-between items-center gap-x-4 py-3">

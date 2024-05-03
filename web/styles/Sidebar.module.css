@@ -42,7 +42,6 @@
   width: 100%;
   display: flex;
   align-items: center;
-  color: white;
 }
 
 .list {
@@ -52,36 +51,4 @@
   margin: 0;
   padding: 0;
   padding-left: 10px;
-}
-
-.list li {
-  margin: 0 5px;
-  height: 35px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 7px;
-  cursor: pointer;
-  position: relative;
-}
-
-.list li:nth-child(odd) {
-  width: 70px;
-}
-
-.list li:nth-child(even) {
-  width: 90px;
-}
-
-.list li p {
-  z-index: 10;
-  color: white;
-}
-
-.close {
-  cursor: pointer;
-  margin-right: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }

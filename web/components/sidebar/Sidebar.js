@@ -46,14 +46,17 @@ const Sidebar = ({
               wsConnected ? "bg-teal-400" : "bg-red-500"
             }`}
           ></div>
-          <button onClick={() => setShowSidebar(false)}>
-            {showSidebar && (
-              <XMarkIcon
-                width={30}
-                className="text-neutral-400 hover:text-neutral-200 duration-150"
-              ></XMarkIcon>
-            )}
-          </button>
+          {showSidebar && (
+            <button
+              className="ml-2"
+              onClick={() => setShowSidebar(false)}
+            >
+            <XMarkIcon
+              width={25}
+              className="text-neutral-400 hover:text-neutral-200 duration-150"
+            />
+            </button>
+          )}
         </div>
         <main>
           <AnimatePresence mode="wait">

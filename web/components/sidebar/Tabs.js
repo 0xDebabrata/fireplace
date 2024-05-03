@@ -13,8 +13,11 @@ const Tabs = ({ selectedTab, setSelectedTab }) => {
                 {tabs.map((item, index) => {
                     return (
                         <li key={index}
+                            className="px-4 py-1 text-sm flex justify-center items-center cursor-pointer relative rounded"
                             onClick={() => setSelectedTab(item)}>
-                            <p>{item}</p>
+                            <p
+                              className="text-neutral-200 z-10"
+                            >{item}</p>
                             { selectedTab === item ? (
                                 <motion.div className="selected"
                                     layoutId="selected" />
@@ -23,15 +26,6 @@ const Tabs = ({ selectedTab, setSelectedTab }) => {
                     )
                 })}
             </ul>
-        {/*
-            <div className={styles.close}>
-                <Image src={"/cross-icon.svg"}
-                    alt={"Close sidebar"}
-                    width={30}
-                    height={30}
-                />
-            </div>
-            */}
         </nav>
     )
 }

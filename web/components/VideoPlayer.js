@@ -231,14 +231,14 @@ const VideoPlayer = ({
         {!showSidebar ? (
           unreadIndicator ? (
             <ChatBubbleOvalLeftIcon
-              className="text-orange-400"
+              className="text-orange-400 hover:text-orange-300"
               width={30}
-            ></ChatBubbleOvalLeftIcon>
+            />
           ) : (
             <ChatBubbleOvalLeftIcon
-              className="text-neutral-700"
+              className="text-neutral-700 hover:text-neutral-500 duration-150"
               width={30}
-            ></ChatBubbleOvalLeftIcon>
+            />
           )
         ) : (
           <></>
