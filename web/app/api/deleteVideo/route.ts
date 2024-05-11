@@ -1,4 +1,8 @@
-import { S3Client, DeleteObjectCommand, S3ClientConfig } from '@aws-sdk/client-s3'
+import {
+  S3Client,
+  DeleteObjectCommand,
+  S3ClientConfig
+} from '@aws-sdk/client-s3'
 import { NextResponse } from 'next/server';
 
 const S3_BUCKET = "fireplace-videos";
@@ -13,7 +17,7 @@ const s3Config: S3ClientConfig = {
 }
 const s3 = new S3Client(s3Config)
 
-export async function POST(req: Request, res) {
+export async function POST(req: Request, _res: Response) {
   const body = await req.json()
   const params = { 
     Bucket: S3_BUCKET,

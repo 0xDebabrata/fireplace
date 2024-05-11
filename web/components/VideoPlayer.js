@@ -236,7 +236,7 @@ const VideoPlayer = ({
             />
           ) : (
             <ChatBubbleOvalLeftIcon
-              className="text-neutral-700 hover:text-neutral-500 duration-150"
+              className="text-neutral-700 hover:text-neutral-500 duration-150 drop-shadow-xl"
               width={30}
             />
           )

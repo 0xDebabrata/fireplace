@@ -15,9 +15,14 @@ const s3Config: S3ClientConfig = {
 };
 const s3 = new S3Client(s3Config);
 
-export async function POST(req: Request, res) {
-  const body = await req.json();
-  const key = `${body.userId}/${body.fileName}`;
+export async function POST(req: Request, _res: Response) {
+  const {
+    fileName,
+    videoId,
+    userId,
+  } = await req.json();
+  const key = `${userId}/${videoId}/${fileName}`;
+  console.log(key)
 
   const command = new PutObjectCommand({
     Bucket: S3_BUCKET,

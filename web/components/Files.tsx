@@ -7,7 +7,10 @@ import Card from './Card'
 
 const Files = ({ flag }) => {
   const [loading, setLoading] = useState(true)
-  const [videos, setVideos] = useState<Database["public"]["Tables"]["fireplace-videos"]["Row"][] | null>([])
+  const [videos, setVideos] = useState<
+    Database["public"]["Tables"]["fireplace-videos"]["Row"][] |
+    null
+  >([])
 
   useEffect(() => {
     const supabase = createClientComponentClient<Database>()
@@ -17,6 +20,7 @@ const Files = ({ flag }) => {
         .from("fireplace-videos")
         .select("*")
 
+      console.log(data)
       if (error) {
         console.error(error)
       } else {
@@ -36,9 +40,7 @@ const Files = ({ flag }) => {
               {videos.map((video, index) => {
                 return <Card 
                   key={index} 
-                  name={video.name} 
-                  url={video.url} 
-                  list={videos} 
+                  video={video}
                   setVideos={setVideos} 
                 />
               })}

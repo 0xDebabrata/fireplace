@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
-import toast, { Toaster } from 'react-hot-toast'
+import { Toaster } from 'react-hot-toast'
 
 const UploadButton = ({ flag, setFlag }) => {
   const supabase = createClientComponentClient()
@@ -13,13 +13,14 @@ const UploadButton = ({ flag, setFlag }) => {
     fileInput.current.click()
   }
 
-  const updateDb = async (fileName) => {
+  const updateDb = async (videoId, fileName) => {
     const { data: { user } } = await supabase.auth.getUser()
     const { error } = await supabase
       .from("fireplace-videos")
       .insert([{
+        id: videoId,
         name: fileName,
-        url: `https://d3v6emoc2mddy2.cloudfront.net/${user.id}/${fileName}`,
+        url: `https://d3v6emoc2mddy2.cloudfront.net/${user.id}/${videoId}/${fileName}`,
         user_id: user.id
       }])
     if (error) {
@@ -33,12 +34,14 @@ const UploadButton = ({ flag, setFlag }) => {
     setLoading(true)
 
     const file = fileInput.current.files[0]
+    const videoId = window.crypto.randomUUID()
     const { data: { user } } = await supabase.auth.getUser()
 
     const reqObject = {
       method: "POST",
       body: JSON.stringify({
         userId: user.id,
+        videoId: videoId,
         fileName: file.name,
         fileType: file.type
       })
@@ -54,7 +57,7 @@ const UploadButton = ({ flag, setFlag }) => {
       xhr.onreadystatechange = async () => {
         if (xhr.readyState === 4) {
           if (xhr.status === 200) {
-            await updateDb(file.name)
+            await updateDb(videoId, file.name)
             resolve(xhr)
             setFlag(!flag)
           } else {

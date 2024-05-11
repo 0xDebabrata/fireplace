@@ -9,12 +9,12 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-const Card = ({ name, url, list, setVideos }) => {
+const Card = ({ video, setVideos }) => {
   const router = useRouter();
   const supabase = createClientComponentClient();
   const fileInputRef = useRef(null);
 
-  const handleDelete = async (name) => {
+  const handleDelete = async (id, name) => {
     const {
       data: { user },
     } = await supabase.auth.getUser();
@@ -22,24 +22,23 @@ const Card = ({ name, url, list, setVideos }) => {
     const reqObject = {
       method: "POST",
       body: JSON.stringify({
-        key: `${user.id}/${name}`,
+        key: `${user.id}/${id}/${name}`,
       }),
     };
 
     // const promise = deleteFile(id)
     const promise = new Promise(async (resolve, reject) => {
-      const { success, err } = await fetch("/api/deleteVideo", reqObject);
-      const { data, error } = await supabase
+      const { err } = await fetch("/api/deleteVideo", reqObject);
+      const { error } = await supabase
         .from("fireplace-videos")
         .delete()
-        .eq("name", name);
+        .eq("id", id);
 
       if (err || error) {
         reject();
         throw new Error(err);
       } else {
-        const updatedList = list.filter((video) => video.name != name);
-        setVideos(updatedList);
+        setVideos(prevVideos => prevVideos.filter((video) => video.id != id));
         resolve();
       }
     });
@@ -57,7 +56,7 @@ const Card = ({ name, url, list, setVideos }) => {
       .update({
         subtitle_url: `https://d3v6emoc2mddy2.cloudfront.net/${userId}/${subtitleFilename}`,
       })
-      .or(`and(url.eq.${url}, user_id.eq.${userId})`);
+      .or(`and(url.eq.${video.url}, user_id.eq.${userId})`);
 
     if (error) {
       console.error(error);
@@ -123,16 +122,16 @@ const Card = ({ name, url, list, setVideos }) => {
   };
 
   const handlePlay = async () => {
-    window.open(url, "_blank");
+    window.open(video.url, "_blank");
   };
 
-  const createWatchparty = async (url) => {
+  const createWatchparty = async () => {
     const {
       data: { user },
     } = await supabase.auth.getUser();
 
     const info = {
-      video_url: url,
+      video_url: video.url,
       creator_id: user.id,
       test: process.env.NEXT_PUBLIC_STAGE === "dev" ? true : false,
     };
@@ -167,7 +166,7 @@ const Card = ({ name, url, list, setVideos }) => {
         </div>
 
         <div className="text-sm leading-6 text-gray-200 truncate">
-          {name}
+          {video.name}
         </div>
 
         <Menu as="div" className="relative ml-auto">
@@ -196,7 +195,7 @@ const Card = ({ name, url, list, setVideos }) => {
                   >
                     <div
                     >
-                      Add subtitles<span className="sr-only">, {name}</span>
+                      Add subtitles<span className="sr-only">, {video.name}</span>
                     </div>
                   </div>
                 )}
@@ -204,13 +203,13 @@ const Card = ({ name, url, list, setVideos }) => {
               <Menu.Item>
                 {({ active }) => (
                   <div
-                    onClick={() => handleDelete(name)}
+                    onClick={() => handleDelete(video.id, video.name)}
                     className={classNames(
                       active ? "bg-neutral-700" : "",
                       "cursor-pointer block px-3 py-1 text-sm leading-6 text-neutral-400"
                     )}
                   >
-                    Delete<span className="sr-only">, {name}</span>
+                    Delete<span className="sr-only">, {video.name}</span>
                   </div>
                 )}
               </Menu.Item>
@@ -231,7 +230,7 @@ const Card = ({ name, url, list, setVideos }) => {
           {/*<dt className="text-gray-500">Last invoice</dt>*/}
           <dd className="text-gray-700">
             <button
-              onClick={() => createWatchparty(url)}
+              onClick={() => createWatchparty()}
               className="px-4 py-1 text-sm text-neutral-400 border border-neutral-600 rounded-md hover:bg-yellow-600 hover:text-neutral-800 duration-150"
             >
               Start watchparty
