@@ -29,6 +29,7 @@ import { imageConfigDefault } from "next/dist/shared/lib/image-config";
 const VideoPlayer = ({
   autoplay,
   src,
+  name,
   controls,
   partyId,
   creatorId,
@@ -135,6 +136,13 @@ const VideoPlayer = ({
         />
       </video>
       <div className="" ref={controlsRef}>
+        <div
+          className="absolute inset-x-0 top-20"
+        >
+          <p style={{ fontSize: "24px" }} className="text-2xl text-white drop-shadow-md">
+            {name}
+          </p>
+        </div>
         <div
           className="absolute flex justify-center items-center top-0 bottom-0 left-0 right-0"
           onClick={() => {

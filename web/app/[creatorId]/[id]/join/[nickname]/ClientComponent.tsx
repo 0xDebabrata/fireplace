@@ -28,6 +28,7 @@ export default function ClientComponent({ params, session }: ClientProps) {
   const ws = useRef<WebSocket | null>(null);
   const screenRef = useRef<HTMLDivElement | null>(null);
 
+  const [videoName, setVideoName] = useState("");   // Store video name
   const [autoplay, setAutoplay] = useState(false);
   const [creatorUserId, setCreatorUserId] = useState<string | null>(null);
   const [partyId, setPartyId] = useState<string | null>(null);
@@ -228,6 +229,12 @@ export default function ClientComponent({ params, session }: ClientProps) {
     };
   };
 
+  const fetchVideoName = async () => {
+    const resp = await fetch(`/api/watchparty/get-video-name?watchpartyId=${params.id}`)
+    const { name } = await resp.json()
+    setVideoName(name)
+  }
+
   useEffect(() => {
     if (!showSidebar) {
       setUnreadIndicator(true);
@@ -247,6 +254,7 @@ export default function ClientComponent({ params, session }: ClientProps) {
     }
 
     setupWsConnection();
+    fetchVideoName();
 
     return () => {
       if (ws.current) {
@@ -265,6 +273,7 @@ export default function ClientComponent({ params, session }: ClientProps) {
             {creator ? (
               <VideoPlayer
                 src={videoSrc}
+                name={videoName}
                 controls={true}
                 partyId={partyId}
                 creatorId={creatorUserId}
@@ -280,6 +289,7 @@ export default function ClientComponent({ params, session }: ClientProps) {
             ) : (
               <VideoPlayer
                 src={videoSrc}
+                name={videoName}
                 controls={false}
                 playheadStart={playheadStart}
                 screenRef={screenRef}
