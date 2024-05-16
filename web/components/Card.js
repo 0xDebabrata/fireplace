@@ -132,7 +132,6 @@ const Card = ({ video, setVideos }) => {
 
     const info = {
       video_id: video.id,
-      video_url: video.url,
       creator_id: user.id,
       test: process.env.NEXT_PUBLIC_STAGE === "dev" ? true : false,
     };
