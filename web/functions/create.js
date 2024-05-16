@@ -2,11 +2,11 @@
 export const createWatchparty = async (id, clientId, supabase, setLoading) => {
   const { data: watchparties, error } = await supabase
     .from("watchparties")
-    .select("video_url")
+    .select("fireplace-videos(url)")
     .eq("id", id)
 
   if (!error) {
-    const src = watchparties[0].video_url
+    const src = watchparties[0]["fireplace-videos"].url
     await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/create?ownerId=${clientId}&partyId=${id}&src=${src}`, {
       method: 'GET'
     })

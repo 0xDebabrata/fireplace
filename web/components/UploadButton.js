@@ -90,7 +90,7 @@ const UploadButton = ({ flag, setFlag }) => {
     >
       {loading
         ? (<div className=''>
-            <p className='text-neutral-200'>Uploading</p>
+            <p className='text-neutral-400 px-2'>{Math.floor(uploadProgress)}% uploaded</p>
             <div className='bg-neutral-500 h-0.5 absolute bottom-0 inset-x-0 rounded-b'>
               <div style={{ width: `${uploadProgress}%`}} className={`bg-yellow-600 h-0.5 ${uploadProgress === "100" ? 'rounded-b' : 'rounded-bl'}`}>
               </div>

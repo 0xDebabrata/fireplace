@@ -131,6 +131,7 @@ const Card = ({ video, setVideos }) => {
     } = await supabase.auth.getUser();
 
     const info = {
+      video_id: video.id,
       video_url: video.url,
       creator_id: user.id,
       test: process.env.NEXT_PUBLIC_STAGE === "dev" ? true : false,
@@ -230,7 +231,7 @@ const Card = ({ video, setVideos }) => {
           {/*<dt className="text-gray-500">Last invoice</dt>*/}
           <dd className="text-gray-700">
             <button
-              onClick={() => createWatchparty()}
+              onClick={createWatchparty}
               className="px-4 py-1 text-sm text-neutral-400 border border-neutral-600 rounded-md hover:bg-yellow-600 hover:text-neutral-800 duration-150"
             >
               Start watchparty
