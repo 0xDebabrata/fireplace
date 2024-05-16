@@ -137,7 +137,7 @@ const VideoPlayer = ({
       </video>
       <div className="" ref={controlsRef}>
         <div
-          className="absolute inset-x-0 top-20"
+          className="absolute inset-x-0 top-16"
         >
           <p style={{ fontSize: "24px" }} className="text-2xl text-white drop-shadow-md">
             {name}

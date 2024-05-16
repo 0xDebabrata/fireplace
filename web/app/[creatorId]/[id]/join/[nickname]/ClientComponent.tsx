@@ -12,6 +12,7 @@ import Sidebar from "../../../../../components/sidebar/Sidebar";
 import { updatePlayhead, keepAlive } from "../../../../../functions/watchparty";
 
 import styles from "../../../../../styles/Watch.module.css";
+import { videoNameWithoutExtension } from "../../../../../functions/utils";
 
 interface ClientProps {
   params: {
@@ -232,7 +233,7 @@ export default function ClientComponent({ params, session }: ClientProps) {
   const fetchVideoName = async () => {
     const resp = await fetch(`/api/watchparty/get-video-name?watchpartyId=${params.id}`)
     const { name } = await resp.json()
-    setVideoName(name)
+    setVideoName(videoNameWithoutExtension(name))
   }
 
   useEffect(() => {
