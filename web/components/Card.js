@@ -54,7 +54,7 @@ const Card = ({ video, setVideos }) => {
     const { error } = await supabase
       .from("fireplace-videos")
       .update({
-        subtitle_url: `https://d3v6emoc2mddy2.cloudfront.net/${userId}/${subtitleFilename}`,
+        subtitle_url: `https://d3v6emoc2mddy2.cloudfront.net/${userId}/${video.id}/${subtitleFilename}`,
       })
       .or(`and(url.eq.${video.url}, user_id.eq.${userId})`);
 
@@ -75,12 +75,13 @@ const Card = ({ video, setVideos }) => {
     } = await supabase.auth.getUser();
 
     // use video file's name instead of subtitle file's name
-    const subtitleFilename = name.split(".").slice(0, -1).join(".") + ".vtt";
+    const subtitleFilename = video.name.split(".").slice(0, -1).join(".") + ".vtt";
 
     const reqObject = {
       method: "POST",
       body: JSON.stringify({
         userId: user.id,
+        videoId: video.id,
         fileName: subtitleFilename,
         fileType: ".vtt",
       }),
