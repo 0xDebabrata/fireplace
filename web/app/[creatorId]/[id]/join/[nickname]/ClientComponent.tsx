@@ -41,7 +41,7 @@ export default function ClientComponent({ params, session }: ClientProps) {
   const [messageList, setMessageList] = useState<any[]>([]);
   // Track web socket connection status.
   // Optimistically set to true initially.
-  const [wsConnected, setWsConnected] = useState(true);
+  const [wsConnected, setWsConnected] = useState(false);
   // Time to wait for before re-establishing connection
   const [waitTime, setWaitTime] = useState(1); // 1 sec
   const [showSidebar, setShowSidebar] = useState(true);
@@ -54,11 +54,7 @@ export default function ClientComponent({ params, session }: ClientProps) {
   };
   const reconnect = async (wait: number) => {
     console.log("Reconnecting");
-    if (wsConnected) return;
-
-    console.log("before");
     await sleep(wait);
-    console.log("after");
     setWaitTime(2 * waitTime);
     setupWsConnection();
   };
@@ -258,7 +254,8 @@ export default function ClientComponent({ params, session }: ClientProps) {
     fetchVideoName();
 
     return () => {
-      if (ws.current) {
+      if (ws.current && wsConnected) {
+        console.log("Closing connection")
         ws.current.close();
       }
     };
@@ -317,17 +314,17 @@ export default function ClientComponent({ params, session }: ClientProps) {
                 setShowSidebar={setShowSidebar}
               />
             )}
+
+            <Toaster
+              toastOptions={{
+                style: {
+                  minWidth: "300px",
+                },
+              }}
+            />
           </div>
         )}
       </div>
-
-      <Toaster
-        toastOptions={{
-          style: {
-            minWidth: "300px",
-          },
-        }}
-      />
     </>
   );
 }

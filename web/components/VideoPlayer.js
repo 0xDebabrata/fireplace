@@ -60,7 +60,6 @@ const VideoPlayer = ({
     const subsArr = src.split(".");
     subsArr.splice(-1, 1, "vtt");
     const subtitleURL = subsArr.join(".");
-    console.log("SUBS", subtitleURL);
     return subtitleURL;
   };
 

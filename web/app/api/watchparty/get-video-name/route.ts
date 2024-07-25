@@ -1,13 +1,11 @@
 import { NextResponse } from "next/server"
-import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs"
-import { cookies } from 'next/headers'
+import { createClient } from "@supabase/supabase-js"
 
 export const GET = async (req: Request) => {
-  const cookieStore = cookies()
-  const supabase = createRouteHandlerClient({ cookies: () => cookieStore }, {
-    supabaseUrl: process.env.NEXT_PUBLIC_SUPABASE_URL,
-    supabaseKey: process.env.SUPABASE_SERVICE_ROLE_KEY,
-  })
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+  )
   const url = new URL(req.url)
 
   const watchpartyId = url.searchParams.get("watchpartyId")
