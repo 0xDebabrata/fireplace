@@ -237,6 +237,16 @@ const Card = ({ video, setVideos }) => {
               Start watchparty
             </button>
           </dd>
+          {video.subtitle_url ? (
+            <dd className="text-gray-700">
+              <button
+                onClick={createWatchparty}
+                className="px-2 py-1 text-xs text-neutral-400 border border-neutral-600 rounded-md"
+              >
+                CC
+              </button>
+            </dd>
+          ) : null}
         </div>
       </dl>
     </li>
