@@ -34,6 +34,10 @@ const UploadButton = ({ flag, setFlag }) => {
     setLoading(true)
 
     const file = fileInput.current.files[0]
+    // Replace () since it creates parsing problems when selecting the video
+    // using Supabase filters (for eg when updating the DB to add subtitle URL)
+    let fileName = file.name.replace(/\(/g, " ").replace(/\)/g, "");
+
     const videoId = window.crypto.randomUUID()
     const { data: { user } } = await supabase.auth.getUser()
 
@@ -42,7 +46,7 @@ const UploadButton = ({ flag, setFlag }) => {
       body: JSON.stringify({
         userId: user.id,
         videoId: videoId,
-        fileName: file.name,
+        fileName,
         fileType: file.type
       })
     }
@@ -57,7 +61,7 @@ const UploadButton = ({ flag, setFlag }) => {
       xhr.onreadystatechange = async () => {
         if (xhr.readyState === 4) {
           if (xhr.status === 200) {
-            await updateDb(videoId, file.name)
+            await updateDb(videoId, fileName)
             resolve(xhr)
             setFlag(!flag)
           } else {
@@ -84,23 +88,23 @@ const UploadButton = ({ flag, setFlag }) => {
   }
 
   return (
-    <div 
+    <div
       className={`${loading ? 'bg-neutral-800' : 'bg-neutral-700 hover:bg-neutral-600 cursor-pointer'} relative py-2 w-[125px] rounded flex justify-center items-center text-sm duration-200`}
       onClick={handleClick}
     >
       {loading
         ? (<div className=''>
-            <p className='text-neutral-400 px-2'><span className='font-mono'>{Math.floor(uploadProgress)}%</span> uploaded</p>
-            <div className='bg-neutral-500 h-0.5 absolute bottom-0 inset-x-0 rounded-b'>
-              <div style={{ width: `${uploadProgress}%`}} className={`bg-yellow-600 h-0.5 ${uploadProgress === "100" ? 'rounded-b' : 'rounded-bl'}`}>
-              </div>
+          <p className='text-neutral-400 px-2'><span className='font-mono'>{Math.floor(uploadProgress)}%</span> uploaded</p>
+          <div className='bg-neutral-500 h-0.5 absolute bottom-0 inset-x-0 rounded-b'>
+            <div style={{ width: `${uploadProgress}%` }} className={`bg-yellow-600 h-0.5 ${uploadProgress === "100" ? 'rounded-b' : 'rounded-bl'}`}>
             </div>
-          </div>)
+          </div>
+        </div>)
         : <p className='text-neutral-200'>Upload video</p>
       }
-      <input 
+      <input
         onChange={handleFileSelect}
-        type="file" accept="video/mp4,video/webm,video/ogg" hidden 
+        type="file" accept="video/mp4,video/webm,video/ogg" hidden
         ref={fileInput}
       />
       <Toaster
@@ -108,7 +112,7 @@ const UploadButton = ({ flag, setFlag }) => {
           style: {
             minWidth: "300px"
           }
-        }} 
+        }}
       />
     </div>
   )
