@@ -51,17 +51,18 @@ const Card = ({ video, setVideos }) => {
   };
 
   const updateDb = async (userId, subtitleFilename) => {
+    const subtitleUrl = `https://d3v6emoc2mddy2.cloudfront.net/${userId}/${video.id}/${subtitleFilename}`
     const { error } = await supabase
       .from("fireplace-videos")
       .update({
-        subtitle_url: `https://d3v6emoc2mddy2.cloudfront.net/${userId}/${video.id}/${subtitleFilename}`,
+        subtitle_url: subtitleUrl,
       })
       .or(`and(url.eq.${video.url}, user_id.eq.${userId})`);
 
     if (error) {
       console.error(error);
     }
-    return { error }
+    return { error, subtitleUrl }
   };
 
   const handleAddSubtitleClick = async () => {
@@ -99,10 +100,17 @@ const Card = ({ video, setVideos }) => {
       xhr.onreadystatechange = async () => {
         if (xhr.readyState === 4) {
           if (xhr.status === 200) {
-            const { error } = await updateDb(user.id, subtitleFilename);
+            const { error, subtitleUrl } = await updateDb(user.id, subtitleFilename);
             if (error) {
               reject(error.message)
             }
+            setVideos(prev => prev.map(vid => {
+              if (vid.id === video.id) {
+                vid.subtitle_url = subtitleUrl
+                return vid
+              }
+              return vid
+            }))
             resolve();
           } else {
             reject("Could not upload subtitle");
