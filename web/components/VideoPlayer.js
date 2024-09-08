@@ -24,7 +24,6 @@ import {
   handleSeeked,
   loadStartPosition,
 } from "../functions/watchparty";
-import { imageConfigDefault } from "next/dist/shared/lib/image-config";
 
 const VideoPlayer = ({
   autoplay,
@@ -56,6 +55,16 @@ const VideoPlayer = ({
   const [subtitleURL, setSubtitleURL] = useState("");
   const [showChat, setShowChat] = useState(true);
 
+  const setStyle = () => {
+    if (!containerRef.current || !videoRef.current) return;
+    const { width: containerWidth, height: containerHeight } = containerRef.current.getBoundingClientRect()
+    const { width: videoWidth, height: videoHeight } = videoRef.current.getBoundingClientRect()
+    const containerAspectRatio = containerWidth / containerHeight
+    const videoAspectRatio = videoWidth / videoHeight
+    console.log({ containerAspectRatio, videoAspectRatio })
+
+  }
+
   const getSubtitleSrc = () => {
     const subsArr = src.split(".");
     subsArr.splice(-1, 1, "vtt");
@@ -77,12 +86,39 @@ const VideoPlayer = ({
     }
   };
 
+  // Ensure video does not get cropped
+  // Video gets expanded to max height or width depending on video and container
+  // aspect ratio
+  useEffect(() => {
+    if (!videoRef.current || !containerRef.current) return;
+
+    const ro = new ResizeObserver(entries => {
+      const { width: containerWidth, height: containerHeight } = containerRef.current.getBoundingClientRect()
+      const { width: videoWidth, height: videoHeight } = videoRef.current.getBoundingClientRect()
+      const containerAspectRatio = containerWidth / containerHeight
+      const videoAspectRatio = videoWidth / videoHeight
+      console.log({ containerAspectRatio, videoAspectRatio })
+      if (containerAspectRatio > videoAspectRatio) {
+        videoRef.current.classList.remove("full-width")
+        videoRef.current.classList.add("full-height")
+      } else {
+        videoRef.current.classList.add("full-width")
+        videoRef.current.classList.remove("full-height")
+      }
+    })
+    ro.observe(containerRef.current)
+
+    return () => {
+      ro.unobserve(containerRef.current)
+    }
+  }, [videoRef, containerRef])
+
   useEffect(() => {
     if (!videoRef.current) return;
     setTime(formatTime(videoRef.current.currentTime));
     hideSubtitles();
     setSubtitleURL(getSubtitleSrc());
-  }, [videoRef.current]);
+  }, [videoRef]);
 
   return (
     <div
@@ -119,6 +155,7 @@ const VideoPlayer = ({
         onLoadedMetadata={() => {
           loadStartPosition(playheadStart);
           setDuration(formatTime(videoRef.current.duration));
+          setStyle();
           hideSubtitles();
         }}
         ref={videoRef}

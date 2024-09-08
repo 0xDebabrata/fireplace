@@ -21,6 +21,14 @@ p {
     margin: 0 auto;
 }
 
+/* To control video width */
+.full-width {
+  width: 100%;
+}
+.full-height {
+  height: 100%;
+}
+
 .selected {
     position: absolute;
     width: 100%;
