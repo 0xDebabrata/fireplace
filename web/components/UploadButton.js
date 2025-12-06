@@ -20,7 +20,7 @@ const UploadButton = ({ flag, setFlag }) => {
       .insert([{
         id: videoId,
         name: fileName,
-        url: `https://d3v6emoc2mddy2.cloudfront.net/${user.id}/${videoId}/${fileName}`,
+        url: `https://d2gs0v485zl89h.cloudfront.net/${user.id}/${videoId}/${fileName}`,
         user_id: user.id
       }])
     if (error) {
