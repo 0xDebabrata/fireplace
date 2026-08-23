@@ -32,4 +32,3 @@ Build the World hackathon has been fun and I'm excited to submit this version of
 1. Fireplace currently supports 5 participants at a watchparty. This can be increased in the future.
 2. Improve the custom video player.
 3. Improve website performance.
-
